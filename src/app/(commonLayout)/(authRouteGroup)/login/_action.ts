@@ -52,10 +52,8 @@ export const loginAction = async (
         // If no specific redirect path was provided, decide based on role
         if (!targetPath) {
             if (role === "ADMIN" || role === "SUPER_ADMIN") {
-                targetPath = "/admin/dashboard";
-            } else {
-                targetPath = "/"; // Standard users go to home menu
-            }
+                targetPath = "/dashboard";
+            } 
         }
 
         // DO NOT Trigger the redirect immediately here so the client can show a success msg

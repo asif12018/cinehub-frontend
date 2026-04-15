@@ -56,13 +56,15 @@ export async function getUserInfo() {
             return null;
         }
 
-        const res = await fetch(`${BASE_API_URL}/auth/me`, {
+        const res = await fetch(`${BASE_API_URL}/auth/authUser`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`
             }
         });
+
+        // console.log(res, "res from getUserInfo")
 
         if (!res.ok) {
             console.error("Failed to fetch user info:", res.status, res.statusText);

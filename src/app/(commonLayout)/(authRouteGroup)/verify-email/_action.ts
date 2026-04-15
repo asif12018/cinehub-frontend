@@ -14,7 +14,7 @@ export const verifyEmail = async (data: { email: string; otp: string }) => {
       data,
     );
 
-    console.log("res", res);
+    // console.log("res", res);
 
     return {
       success: true,

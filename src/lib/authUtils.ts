@@ -1,4 +1,4 @@
-export type UserRole = "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
+export type UserRole = "SUPER_ADMIN" | "ADMIN" | "USER";
 
 export const authRoutes = [ "/login", "/register", "/forgot-password", "/reset-password", "/verify-email" ];
 
@@ -16,25 +16,22 @@ export const commonProtectedRoutes : RouteConfig = {
     pattern : []
 }
 
-export const doctorProtectedRoutes : RouteConfig = {
-    pattern: [/^\/doctor\/dashboard/ ], // Matches any path that starts with /doctor/dashboard
-    exact : []
-}
+export const userProtectedRoutes: RouteConfig = {
+    pattern: [/^\/(watchList|subscription)(\/|$)/], 
+    exact: []
+};
 
-export const adminProtectedRoutes : RouteConfig = {
-    pattern: [/^\/admin\/dashboard/ ], // Matches any path that starts with /admin/dashboard
-    exact : []
-}
+export const adminProtectedRoutes: RouteConfig = {
+    pattern: [/^\/dashboard(\/|$)/], 
+    exact: []
+};
 
 // export const superAdminProtectedRoutes : RouteConfig = {
 //     pattern: [/^\/admin\/dashboard/ ], // Matches any path that starts with /super-admin/dashboard
 //     exact : []
 // }
 
-export const patientProtectedRoutes : RouteConfig = {
-    pattern: [/^\/dashboard/ ], // Matches any path that starts with /dashboard
-    exact : [ "/payment/success"]
-};
+
 
 export const isRouteMatches = (pathname : string, routes : RouteConfig) => {
     if(routes.exact.includes(pathname)) {
@@ -43,22 +40,16 @@ export const isRouteMatches = (pathname : string, routes : RouteConfig) => {
     return routes.pattern.some((pattern : RegExp) => pattern.test(pathname));
 }
 
-export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT" | "COMMON" | null => {
-    if(isRouteMatches(pathname, doctorProtectedRoutes)) {
-        return "DOCTOR";
+export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "USER" | "COMMON" | null => {
+    if(isRouteMatches(pathname, userProtectedRoutes)) {
+        return "USER"; // Fix: Changed from "DOCTOR"
     }
-
-    // if (isRouteMatches(pathname, superAdminProtectedRoutes)) {
-    //     return "SUPER_ADMIN";
-    // }
 
     if(isRouteMatches(pathname, adminProtectedRoutes)) {
         return "ADMIN";
     }
-    
-    if(isRouteMatches(pathname, patientProtectedRoutes)) {
-        return "PATIENT";
-    }
+
+    // Removed the duplicated adminProtectedRoutes check that returned "PATIENT"
 
     if(isRouteMatches(pathname, commonProtectedRoutes)) {
         return "COMMON";
@@ -69,14 +60,12 @@ export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "DO
 
 export const getDefaultDashboardRoute = (role : UserRole) => {
     if(role === "ADMIN" || role === "SUPER_ADMIN") {
-        return "/admin/dashboard";
-    }
-    if(role === "DOCTOR") {
-        return "/doctor/dashboard";
-    }
-    if(role === "PATIENT") {
         return "/dashboard";
     }
+    if(role === "USER") {
+        return "/watchList";
+    }
+   
 
     return "/";
 }
