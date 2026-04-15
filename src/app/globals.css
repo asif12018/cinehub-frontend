@@ -84,13 +84,13 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: #141414; /* Netflix black */
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: #e50914; /* Netflix red */
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
@@ -126,5 +126,20 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Custom Netflix Styles */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .netflix-bg {
+    background-color: #141414;
   }
 }
