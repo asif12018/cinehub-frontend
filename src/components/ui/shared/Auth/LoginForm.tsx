@@ -31,7 +31,9 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
     const { mutateAsync , isPending} = useMutation({
         mutationFn : (payload : ILoginPayload) => loginAction(payload, redirectPath),
-    })
+    });
+
+    //send otp to
 
     const form = useForm({
         defaultValues : {
@@ -176,6 +178,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
       </CardContent>
 
       <CardFooter className="flex flex-col items-start bg-transparent px-0 border-t-0 pt-8 space-y-4">
+        <p className="text-[16px] text-[#737373]">
+            Forget the password?{" "}
+            <Link href="/sendOtpVerification" className="text-white font-medium hover:underline">Reset password</Link>
+        </p>
         <p className="text-[16px] text-[#737373]">
             New to CineHub?{" "}
             <Link
