@@ -5,7 +5,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { MovieCard } from "@/components/ui/movie-card";
 import { getMedia, getMediaAllGenre } from "@/service/media.service";
 import { useQuery } from "@tanstack/react-query";
-import { Search as SearchIcon, X, ChevronLeft, ChevronRight } from "lucide-react"; // Import Chevrons
+import { Search as SearchIcon, X, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 
 export default function MediaPage() {
   const initialState = {
@@ -15,15 +15,15 @@ export default function MediaPage() {
     "avgRating[gte]": "", 
     streamingPlatFrom: "",
     "genres.genre.name": "",
-    page: 1, // 🔴 ADDED PAGE STATE
-    limit: 10, // You can adjust this to 12 or 18 so it fits the grid perfectly
+    page: 1, 
+    limit: 12, // Switched to 12 for better grid math (2 rows of 6)
   };
 
   const [filters, setFilters] = useState(initialState);
+  const [showFilters, setShowFilters] = useState(false); // Mobile filter toggle
 
   // Fetch data based on dynamic filters
   const queryString = new URLSearchParams(
-    // We convert everything to strings so URLSearchParams works correctly
     Object.entries(filters)
       .filter(([_, v]) => v !== "")
       .map(([k, v]) => [k, String(v)]) 
@@ -34,22 +34,17 @@ export default function MediaPage() {
     queryFn: () => getMedia(queryString),
   });
 
-  console.log(media, 'this is media')
-
-  const moviesList = media?.data?.data || media?.data || [];
-  // 🔴 EXTRACT PAGINATION META DATA
+  const moviesList = media?.data || [];
   const meta = media?.meta || { page: 1, totalPages: 1 };
 
   const handleFilterChange = (key: string, value: string | number) => {
     setFilters((prev) => {
       let newFilters = { ...prev, [key]: value };
       
-      // If we pick a sort option, let's automatically make it descending (highest first)
       if (key === "sortBy" && value !== "") {
         newFilters.sortOrder = "desc";
       }
 
-      // 🔴 IMPORTANT: If the user changes a filter (like genre or search), reset back to page 1
       if (key !== "page") {
         newFilters.page = 1;
       }
@@ -65,35 +60,49 @@ export default function MediaPage() {
   });
 
   const genresList = genresResponse?.data?.data || genresResponse?.data || [];
-  console.log("META DATA FROM BACKEND:", meta);
+
+  // Reusable sleek styling for dropdowns
+  const selectStyle = "appearance-none bg-[#141414] border border-gray-700/50 hover:border-gray-500 rounded-full py-2.5 px-5 text-sm outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all cursor-pointer shadow-lg";
 
   return (
-    <div className="min-h-screen bg-netflix-bg text-white font-sans flex flex-col">
+    <div className="min-h-screen bg-[#141414] text-white font-sans flex flex-col">
       <Navbar />
 
-      <main className="pt-28 px-4 md:px-12 pb-10 flex-grow">
-        <header className="mb-10">
-          <h1 className="text-3xl font-bold mb-6">Browse Library</h1>
+      <main className="pt-28 px-4 md:px-12 pb-16 flex-grow max-w-[2000px] mx-auto w-full">
+        
+        {/* HEADER SECTION */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Movies & Series</h1>
+          
+          {/* Mobile Filter Toggle */}
+          <button 
+            className="md:hidden flex items-center gap-2 bg-gray-800 py-2 px-4 rounded-md w-fit"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <SlidersHorizontal className="w-4 h-4" /> Filters
+          </button>
+        </div>
 
-          {/* SINGLE, CLEAN FILTER BAR */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 bg-gray-900/40 p-6 rounded-xl border border-gray-800">
+        {/* FILTER BAR - Netflix Style */}
+        <div className={`mb-12 transition-all ${showFilters ? "block" : "hidden md:block"}`}>
+          <div className="flex flex-wrap items-center gap-3 bg-black/20 p-2 rounded-2xl">
             
-            {/* 1. Search */}
-            <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            {/* Search - Primary Focus */}
+            <div className="relative flex-grow min-w-[250px] md:max-w-md">
+              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Title, Cast, Director..."
-                className="w-full bg-black/40 border border-gray-700 rounded-md py-2 pl-10 pr-4 text-sm focus:border-red-600 outline-none"
+                placeholder="Search titles, actors, directors..."
+                className="w-full bg-[#2b2b2b]/50 border border-transparent hover:bg-[#2b2b2b] hover:border-gray-600 rounded-full py-3 pl-12 pr-4 text-sm focus:bg-[#141414] focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400"
                 value={filters.searchTerm}
                 onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
               />
             </div>
 
-            {/* 2. Genre */}
+            {/* Pill Dropdowns */}
             <select
               value={filters["genres.genre.name"]}
-              className="bg-black/40 border border-gray-700 rounded-md py-2 px-4 text-sm outline-none focus:border-red-600"
+              className={selectStyle}
               onChange={(e) => handleFilterChange("genres.genre.name", e.target.value)}
             >
               <option value="">All Genres</option>
@@ -106,10 +115,9 @@ export default function MediaPage() {
               ))}
             </select>
 
-            {/* 3. Platform */}
             <select
               value={filters.streamingPlatFrom}
-              className="bg-black/40 border border-gray-700 rounded-md py-2 px-4 text-sm outline-none focus:border-red-600"
+              className={selectStyle}
               onChange={(e) => handleFilterChange("streamingPlatFrom", e.target.value)}
             >
               <option value="">All Platforms</option>
@@ -122,80 +130,93 @@ export default function MediaPage() {
               <option value="DISNEY_PLUS">Disney Plus</option>
             </select>
 
-            {/* 4. Min Rating */}
             <select
               value={filters["avgRating[gte]"]}
-              className="bg-black/40 border border-gray-700 rounded-md py-2 px-4 text-sm outline-none focus:border-red-600"
+              className={selectStyle}
               onChange={(e) => handleFilterChange("avgRating[gte]", e.target.value)}
             >
-              <option value="">Minimum Rating</option>
+              <option value="">Any Rating</option>
               {[1, 2, 3, 4, 5].map((num) => (
                 <option key={num} value={num.toString()}>{num}+ Stars</option>
               ))}
             </select>
 
-            {/* 5. Sort By */}
             <select
               value={filters.sortBy}
-              className="bg-black/40 border border-gray-700 rounded-md py-2 px-4 text-sm outline-none focus:border-red-600"
+              className={selectStyle}
               onChange={(e) => handleFilterChange("sortBy", e.target.value)}
             >
-              <option value="">Sort By...</option>
-              <option value="releaseYear">Recent (Newest First)</option>
-              <option value="avgRating">Top Rated</option>
+              <option value="">Sort: Recommended</option>
+              <option value="releaseYear">Newest Releases</option>
+              <option value="avgRating">Highest Rated</option>
               <option value="likes">Most Liked</option> 
             </select>
 
-            {/* 6. Reset Filters */}
-            <button 
-              onClick={() => setFilters(initialState)} 
-              className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-gray-700 transition-colors rounded-md py-2 px-4 text-sm"
-            >
-              <X className="w-4 h-4" /> Reset
-            </button>
+            {/* Reset Button (Only shows if a filter is active) */}
+            {Object.values(filters).some(val => val !== "" && val !== 1 && val !== 12) && (
+               <button 
+                 onClick={() => setFilters(initialState)} 
+                 className="flex items-center justify-center gap-1.5 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors rounded-full py-2.5 px-4 text-sm font-medium ml-auto"
+               >
+                 <X className="w-4 h-4" /> Clear All
+               </button>
+            )}
           </div>
-        </header>
+        </div>
 
-        {/* Results Grid */}
+        {/* RESULTS GRID */}
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
              {[...Array(12)].map((_, i) => (
-               <div key={i} className="h-72 bg-gray-800/40 rounded-lg animate-pulse" />
+               <div key={i} className="aspect-[2/3] bg-gray-800/40 rounded-md animate-pulse shadow-xl" />
              ))}
           </div>
         ) : moviesList.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-y-10 gap-x-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
             {moviesList.map((movie: any) => (
-              <MovieCard key={movie.id} movie={movie} />
+              <div key={movie.id} className="transition-transform duration-300 hover:scale-105 hover:z-10 cursor-pointer">
+                <MovieCard movie={movie} />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-500 text-lg">No movies found matching your filters.</p>
+          <div className="flex flex-col items-center justify-center py-32 text-center">
+            <SearchIcon className="w-16 h-16 text-gray-600 mb-4" />
+            <h3 className="text-2xl font-semibold mb-2">No matches found</h3>
+            <p className="text-gray-400 max-w-md">We couldn't find anything matching your filters. Try adjusting your search or clearing the filters.</p>
           </div>
         )}
 
-        {/* 🔴 PAGINATION CONTROLS */}
-        {!isLoading  && (
-          <div className="flex items-center justify-center gap-4 mt-16 border-t border-gray-800 pt-8">
+        {/* PAGINATION */}
+        {!isLoading && meta.totalPages > 1 && (
+          <div className="flex items-center justify-center gap-6 mt-20">
             <button
               onClick={() => handleFilterChange("page", meta.page - 1)}
               disabled={meta.page <= 1}
-              className="p-2 rounded-full bg-gray-800 hover:bg-red-600 disabled:opacity-50 disabled:hover:bg-gray-800 transition-colors"
+              className="p-3 rounded-full bg-[#2b2b2b] hover:bg-red-600 disabled:opacity-30 disabled:hover:bg-[#2b2b2b] transition-all"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-6 h-6" />
             </button>
             
-            <span className="text-gray-400 font-medium">
-              Page {meta.page} of {meta.totalPages}
-            </span>
+            <div className="flex gap-2">
+              {[...Array(meta.totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleFilterChange("page", i + 1)}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    meta.page === i + 1 ? "bg-red-600 scale-125" : "bg-gray-600 hover:bg-gray-400"
+                  }`}
+                  aria-label={`Go to page ${i + 1}`}
+                />
+              ))}
+            </div>
 
             <button
               onClick={() => handleFilterChange("page", meta.page + 1)}
               disabled={meta.page >= meta.totalPages}
-              className="p-2 rounded-full bg-gray-800 hover:bg-red-600 disabled:opacity-50 disabled:hover:bg-gray-800 transition-colors"
+              className="p-3 rounded-full bg-[#2b2b2b] hover:bg-red-600 disabled:opacity-30 disabled:hover:bg-[#2b2b2b] transition-all"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-6 h-6" />
             </button>
           </div>
         )}
