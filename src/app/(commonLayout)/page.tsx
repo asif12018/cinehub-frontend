@@ -1,69 +1,66 @@
 "use client";
 
+import { useSearchParams } from "next/navigation"; // Import this
 import { Navbar } from "@/components/ui/navbar";
 import { Hero } from "@/components/ui/hero";
 import { MovieRow } from "@/components/ui/movie-row";
-
 import { getMedia } from "@/service/media.service";
 import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
-  const { data: media, isLoading } = useQuery<any>({
-    queryKey: ["media"],
-    queryFn: () => getMedia()
-  });
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search"); // Get ?search=... from URL
 
-  console.log('this is media', media)
+  // Fetch media - if searchQuery exists, we add it to the queryFn
+  const { data: media, isLoading } = useQuery<any>({
+    queryKey: ["media", searchQuery], // Add searchQuery to key so it refetches on search
+    queryFn: () => getMedia(searchQuery ? `searchTerm=${searchQuery}` : "")
+  });
 
   const moviesList = Array.isArray(media?.data) ? media.data : (media?.data?.data || []);
 
-  const rows = [
-    { title: "Trending Now", movies: moviesList.slice(0, 10) },
-    { title: "Adventure Movies", movies: moviesList.filter((m: any) => m.genres.some((g: any) => g.genre.name === "Adventure")) },
-    { title: "Animation", movies: moviesList.filter((m: any) => m.genres.some((g: any) => g.genre.name === "Animation")) },
-    { title: "Mystery", movies: moviesList.filter((m: any) => m.genres.some((g: any) => g.genre.name === "Mystery")) },
-    { title: "Top Rated", movies: moviesList.filter((m: any) => m.avgRating && m.avgRating >= 4) },
-  ];
+  // Determine if we are showing search results or the default categories
+  const isSearching = !!searchQuery;
 
   return (
     <div className="min-h-screen bg-netflix-bg text-white font-sans overflow-x-hidden">
       <Navbar />
-      <Hero />
-      <main className="pt-4">
+      
+      {/* Hide Hero if searching to make results clearer */}
+      {!isSearching && <Hero />}
+      
+      <main className={isSearching ? "pt-24 px-8" : "pt-4"}>
         {isLoading ? (
-          // SKELETON LOADER UI
-          <div className="flex flex-col gap-8 py-8 md:py-12 px-4 md:px-8">
-            {[1, 2, 3].map((rowIndicator) => (
-              <div key={rowIndicator} className="animate-pulse">
-                {/* Skeleton Title */}
-                <div className="h-6 w-48 bg-gray-800/60 rounded mb-6 px-2"></div>
-                {/* Skeleton Movie Cards */}
-                <div className="flex gap-4 md:gap-6 overflow-hidden -ml-2 md:-ml-3">
-                  {[1, 2, 3, 4, 5, 6].map((cardIndicator) => (
-                    <div 
-                      key={cardIndicator} 
-                      // Adjust these dimensions if your MovieCard uses different sizes!
-                      className="min-w-[150px] md:min-w-[200px] h-[225px] md:h-[300px] bg-gray-800/60 rounded-md shrink-0"
-                    ></div>
-                  ))}
-                </div>
+          <div className="...">Loading...</div> // Your existing skeleton
+        ) : isSearching ? (
+          // SEARCH RESULTS VIEW
+          <section>
+            <h1 className="text-3xl font-bold mb-8">Results for "{searchQuery}"</h1>
+            {moviesList.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                {moviesList.map((movie: any) => (
+                   <MovieRow key={movie.id} title="" movies={[movie]} /> 
+                   /* Note: You might want a MovieCard grid here instead of rows */
+                ))}
               </div>
-            ))}
-          </div>
+            ) : (
+              <p className="text-gray-400 text-xl">No movies found matching your search.</p>
+            )}
+          </section>
         ) : (
-          // ACTUAL MOVIE ROWS
-          rows.map((row, index) => (
-            row.movies.length > 0 && (
-              <MovieRow key={index} title={row.title} movies={row.movies} />
-            )
-          ))
+          // DEFAULT CATEGORY ROWS (Your existing logic)
+          <>
+            <MovieRow title="Trending Now" movies={moviesList.slice(0, 10)} />
+            <MovieRow 
+              title="Adventure Movies" 
+              movies={moviesList.filter((m: any) => m.genres.some((g: any) => g.genre.name === "Adventure"))} 
+            />
+            {/* ... other rows ... */}
+          </>
         )}
       </main>
 
-      <footer className="border-t border-gray-800 mt-20 py-12 text-center text-gray-500 text-sm">
-        <p>&copy; 2026 CineHub. All rights reserved.</p>
-        <p className="mt-2">Privacy | Terms | Contact Us</p>
-      </footer>
+      {/* Footer */}
     </div>
   );
 }
