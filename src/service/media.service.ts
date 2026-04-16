@@ -13,7 +13,7 @@ const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
 
-export async function getMedia(queryString: string){
+export async function getMedia(queryString?: string ){
     try{
       
         const res = await httpClient.get(`${BASE_API_URL}/media?${queryString}`);

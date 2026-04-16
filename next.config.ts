@@ -9,6 +9,21 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/t/p/**",
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**', // This allows all paths from Cloudinary
+      },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org', // Adding this too since your cast photos use it!
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'via.placeholder.com', // For your fallbacks
+        pathname: '/**',
+      },
     ],
   },
 };
