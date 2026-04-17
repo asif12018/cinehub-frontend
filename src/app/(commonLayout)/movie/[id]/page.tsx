@@ -2,12 +2,13 @@
 
 import { useState, use } from "react";
 import { Navbar } from "@/components/ui/navbar";
-import { Play, Info, X, ShoppingCart, CreditCard } from "lucide-react"; // Added some icons for the payment buttons
+import { Play, Info, X, ShoppingCart, CreditCard, Loader2 } from "lucide-react"; // 🟢 Added Loader2 for loading state
 import { useQuery } from "@tanstack/react-query";
 import { getMediaById } from "@/service/media.service"; 
 import dynamic from "next/dynamic";
 import type ReactPlayerType from "react-player";
-import { getPurchaseInfo, getSubscriptionInfo } from "@/service/payment.service";
+// 🟢 Imported purchaseAMovie
+import { getPurchaseInfo, getSubscriptionInfo, purchaseAMovie } from "@/service/payment.service";
 
 const ReactPlayer = dynamic(() => import("react-player"), { 
   ssr: false 
@@ -18,6 +19,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
   const [playingUrl, setPlayingUrl] = useState<string | null>(null);
   const [isIntroPlaying, setIsIntroPlaying] = useState(false);
+  
+  // 🟢 NEW: State to prevent double-clicks while waiting for Stripe
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleLaunchVideo = (url: string) => {
     setPlayingUrl(url);
@@ -29,7 +33,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     setIsIntroPlaying(false);
   };
 
-  // 1️⃣ Fetch media details
   const { data: mediaResponse, isLoading, isError } = useQuery<any>({
     queryKey: ["media-details", id],
     queryFn: () => getMediaById(id),
@@ -37,37 +40,45 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
   const movie = mediaResponse?.data || mediaResponse;
 
-  // 2️⃣ Fetch subscription info
   const {data: subscribtionResponse, isLoading: isSubscribtionLoading} = useQuery<any>({
     queryKey: ["subscription"],
     queryFn: () => getSubscriptionInfo(),
   });
 
-  // 3️⃣ Fetch purchase info (Only runs if movie ID exists!)
   const {data: isPurchase, isLoading: isPurchaseLoading} = useQuery<any>({
     queryKey: ["isPurchase", movie?.id],
     queryFn: () => getPurchaseInfo(movie?.id),
     enabled: !!movie?.id
   });
 
-  // 🟢 LOGIC: Does the user have access to watch this?
-  // Your backend sends { success: true, data: true } when they have access
-// ✅ NEW BULLETPROOF LOGIC
-const isSubscribed = subscribtionResponse === true || subscribtionResponse?.data === true || subscribtionResponse?.success === true;
-const hasPurchased = isPurchase === true || isPurchase?.data === true || isPurchase?.success === true;
+  const isSubscribed = subscribtionResponse === true || subscribtionResponse?.data === true || subscribtionResponse?.success === true;
+  const hasPurchased = isPurchase === true || isPurchase?.data === true || isPurchase?.success === true;
 
-const hasAccess = isSubscribed || hasPurchased;
+  const hasAccess = isSubscribed || hasPurchased;
 
-  // 🟢 LOGIC: Format the prices (Fallback to defaults if your DB columns are empty)
   const rentPrice = movie?.rentPrice ? `$${movie.rentPrice}` : "$3.00";
   const buyPrice = movie?.buyPrice ? `$${movie.buyPrice}` : "$15.00";
 
-  // Placeholder function for your checkout flow
-  const handleCheckout = (type: "RENTAL" | "ONE_TIME_BUY" | "SUBSCRIPTION") => {
-    console.log(`Initiating checkout for: ${type}`);
-    // You will call your /payment/create-checkout API here!
-  };
+  // 🟢 NEW: Fully wired up checkout handler
+  const handleCheckout = async (type: "RENTAL" | "ONE_TIME_BUY" | "SUBSCRIPTION") => {
+    try {
+      setIsRedirecting(true);
+      
+      const checkoutUrl = await purchaseAMovie(type, movie?.id);
 
+      if (checkoutUrl) {
+        // Redirect the user to Stripe!
+        window.location.href = checkoutUrl; 
+      } else {
+        alert("Failed to create checkout session. Please try again.");
+        setIsRedirecting(false); // Only reset if it fails, otherwise let them redirect
+      }
+    } catch (error) {
+      console.error("Checkout failed", error);
+      alert("Something went wrong.");
+      setIsRedirecting(false);
+    }
+  };
 
   if (isLoading || isSubscribtionLoading || isPurchaseLoading) {
     return (
@@ -125,11 +136,9 @@ const hasAccess = isSubscribed || hasPurchased;
             {movie.synopsis}
           </p>
 
-          {/* 🟢 DYNAMIC BUTTON RENDER AREA */}
           <div className="flex flex-wrap items-center gap-4 mb-10">
             
             {hasAccess ? (
-              // ✅ SHOW PLAY BUTTON IF RENTED, BOUGHT, OR SUBSCRIBED
               <button 
                 onClick={() => handleLaunchVideo(movie.streamingUrl)} 
                 className="flex items-center gap-2 bg-white text-black px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-white/80 transition-colors"
@@ -137,32 +146,36 @@ const hasAccess = isSubscribed || hasPurchased;
                 <Play className="w-6 h-6 fill-current" /> Play
               </button>
             ) : (
-              // ❌ SHOW PAYMENT OPTIONS IF NO ACCESS
               <>
                 <button 
                   onClick={() => handleCheckout("SUBSCRIPTION")}
-                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-red-700 transition-colors"
+                  disabled={isRedirecting}
+                  className="flex items-center gap-2 bg-red-600 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
+                  {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                   Subscribe to Watch
                 </button>
                 
                 <button 
                   onClick={() => handleCheckout("RENTAL")}
-                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600"
+                  disabled={isRedirecting}
+                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <CreditCard className="w-5 h-5" /> Rent 48hr ({rentPrice})
+                  {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
+                  Rent 48hr ({rentPrice})
                 </button>
 
                 <button 
                   onClick={() => handleCheckout("ONE_TIME_BUY")}
-                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600"
+                  disabled={isRedirecting}
+                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ShoppingCart className="w-5 h-5" /> Buy ({buyPrice})
+                  {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShoppingCart className="w-5 h-5" />}
+                  Buy ({buyPrice})
                 </button>
               </>
             )}
             
-            {/* TRAILER BUTTON ALWAYS VISIBLE */}
             {movie.trailerUrl && (
               <button 
                 onClick={() => handleLaunchVideo(movie.trailerUrl)}
@@ -187,7 +200,6 @@ const hasAccess = isSubscribed || hasPurchased;
         </div>
       </div>
 
-      {/* UNIVERSAL VIDEO MODAL */}
       {playingUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
           <div className="relative w-full max-w-5xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
