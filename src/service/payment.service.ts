@@ -58,7 +58,7 @@ export async function getSubscriptionInfo() {
     }
 
     // 🟢 Attach the token to the Authorization header
-    const res = await httpClient.get(
+    const res:any = await httpClient.get(
       `${BASE_API_URL}/payment/getSubscription`,
       {
         headers: {

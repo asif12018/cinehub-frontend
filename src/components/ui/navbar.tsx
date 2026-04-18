@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, User, Loader2 } from "lucide-react";
+import { Search, User, Loader2, Sparkles, Crown } from "lucide-react"; // 🟢 Added Crown icon
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -9,18 +9,32 @@ import { getUserInfo } from "@/service/auth.service";
 import { getMedia } from "@/service/media.service";
 import { useRouter } from "next/navigation";
 
+// 🟢 Import your new subscription service! Adjust the path if needed.
+import { getSubscriptionInfo } from "@/service/payment.service"; 
+
 export function Navbar() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // 1. Fetch User Info for the role-based links
-  const { data: user } = useQuery({
+  // 1. Fetch User Info
+  const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user"],
     queryFn: getUserInfo,
   });
 
-  // 2. Fetch Search Results for the live suggestions
+  // 🟢 2. Fetch Subscription Info (Only runs if the user is actually logged in!)
+  const { data: subResponse, isLoading: isLoadingSub } = useQuery({
+    queryKey: ["subscription", user?.id], // Cache it based on the user
+    queryFn: getSubscriptionInfo,
+    enabled: !!user, // This prevents the API call if they are a guest!
+  });
+
+  // Determine if they are subscribed based on your API's true/false response
+  // (Adjust this if your API returns the boolean inside a property like subResponse.data)
+  const isSubscribed = subResponse === true || subResponse?.data === true || subResponse?.success === true;
+
+  // 3. Fetch Search Results
   const { data: searchResults, isLoading: isSearching } = useQuery<any>({
     queryKey: ["search-media", searchTerm],
     queryFn: () => getMedia(`searchTerm=${searchTerm}`),
@@ -29,17 +43,14 @@ export function Navbar() {
 
   const suggestions = searchResults?.data?.data || searchResults?.data || [];
 
-  // 3. Handle the "Enter" or "Search Icon" click
   const handleSearchSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (searchTerm.trim()) {
       setShowSuggestions(false);
-      // This sends the user to the home page with the search query
       router.push(`/?search=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
-  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = () => setShowSuggestions(false);
     window.addEventListener("click", handleClickOutside);
@@ -47,22 +58,22 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-gradient-to-b from-black/90 to-transparent p-4 md:p-6">
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-gradient-to-b from-black/90 to-transparent p-4 md:p-6 transition-all duration-300">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
         {/* Logo */}
         <Link
           href="/"
-          className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent shrink-0"
+          className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent shrink-0 tracking-tight"
         >
-          CineTube
+          CineHub
         </Link>
 
         {/* Search Section */}
         <div className="hidden md:flex flex-1 max-w-md mx-8 relative" onClick={(e) => e.stopPropagation()}>
-          <form onSubmit={handleSearchSubmit} className="relative w-full">
+          <form onSubmit={handleSearchSubmit} className="relative w-full group">
             <button type="submit" className="absolute left-4 top-1/2 transform -translate-y-1/2">
-              <Search className="text-gray-400 w-5 h-5 hover:text-red-600 transition-colors cursor-pointer" />
+              <Search className="text-gray-400 w-5 h-5 group-hover:text-red-500 transition-colors cursor-pointer" />
             </button>
             <input
               type="text"
@@ -73,7 +84,7 @@ export function Navbar() {
               }}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Search movies..."
-              className="w-full pl-12 pr-10 py-2 bg-black/60 border border-gray-700 rounded-full text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all"
+              className="w-full pl-12 pr-10 py-2 bg-[#141414]/80 backdrop-blur-sm border border-gray-700/50 rounded-full text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500"
             />
             {isSearching && (
               <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-red-600" />
@@ -82,7 +93,7 @@ export function Navbar() {
 
           {/* Suggestion Dropdown */}
           {showSuggestions && searchTerm.trim().length > 1 && (
-            <div className="absolute top-full mt-2 w-full bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden max-h-[400px] overflow-y-auto">
+            <div className="absolute top-full mt-2 w-full bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden max-h-[400px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
               {suggestions.length > 0 ? (
                 suggestions.map((movie: any) => (
                   <Link
@@ -92,9 +103,9 @@ export function Navbar() {
                       setShowSuggestions(false);
                       setSearchTerm("");
                     }}
-                    className="flex items-center gap-3 p-3 hover:bg-white/10 transition-colors border-b border-gray-800 last:border-0"
+                    className="flex items-center gap-3 p-3 hover:bg-white/10 transition-colors border-b border-gray-800/50 last:border-0"
                   >
-                    <div className="relative w-12 h-16 shrink-0">
+                    <div className="relative w-12 h-16 shrink-0 bg-gray-900 rounded">
                       <Image
                         src={movie.posterUrl || "/placeholder.jpg"}
                         alt={movie.title}
@@ -104,7 +115,7 @@ export function Navbar() {
                     </div>
                     <div className="flex flex-col">
                       <span className="text-white font-medium text-sm line-clamp-1">{movie.title}</span>
-                      <span className="text-gray-400 text-xs">{movie.releaseYear} • {movie.type}</span>
+                      <span className="text-gray-400 text-xs mt-0.5">{movie.releaseYear} • {movie.type}</span>
                     </div>
                   </Link>
                 ))
@@ -115,30 +126,78 @@ export function Navbar() {
           )}
         </div>
 
-        {/* User Options Section (RE-ADDED EVERYTHING HERE) */}
-        <div className="flex items-center space-x-6 shrink-0">
-          {/* Mobile Search Icon */}
+        {/* User Options Section */}
+        <div className="flex items-center space-x-4 md:space-x-6 shrink-0">
           <button className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Search className="w-6 h-6 text-white" />
+            <Search className="w-5 h-5 text-white" />
           </button>
           
-          {/* Role-based Links */}
           {user?.role === "USER" && (
-            <Link href="/movie" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+            <Link href="/movie" className="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Movie
             </Link>
           )}
           
           {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
-            <Link href="/dashboard" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+            <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Dashboard
             </Link>
           )}
 
-          {/* User Avatar */}
-          <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-red-600 transition-all cursor-pointer shadow-md">
-            <User className="w-6 h-6 text-white" />
-          </div>
+          {/* Conditional Auth UI */}
+          {isLoadingUser || (user && isLoadingSub) ? (
+            // Loading state (Waits for both user AND subscription status)
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-gray-700 border-t-red-600 animate-spin" />
+          ) : user ? (
+            // LOGGED IN STATE
+            <div className="flex items-center gap-3 md:gap-4">
+              
+              {!isSubscribed ? (
+                // 🔴 IF NOT SUBSCRIBED: Show Subscribe Button
+                <Link 
+                  href="/pricing" 
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black px-3 py-1.5 md:px-4 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all shadow-[0_0_10px_rgba(234,179,8,0.2)] hover:shadow-[0_0_15px_rgba(234,179,8,0.4)]"
+                >
+                  <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Subscribe</span>
+                  <span className="sm:hidden">Pro</span>
+                </Link>
+              ) : (
+                // 🟢 IF SUBSCRIBED: Show VIP/PRO Badge
+                <div className="hidden sm:flex items-center gap-1 text-yellow-500 bg-yellow-500/10 px-2 py-1 rounded-md text-xs font-bold border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.1)]">
+                  <Crown className="w-3.5 h-3.5" />
+                  PRO
+                </div>
+              )}
+
+              {/* User Avatar - Changes to GOLD border if they are subscribed! */}
+              <div 
+                className={`w-9 h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
+                  isSubscribed 
+                    ? "border-yellow-500 bg-yellow-500/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
+                    : "bg-gray-800 border-gray-700 hover:border-red-500 hover:bg-red-600/20"
+                }`}
+              >
+                <User className={`w-5 h-5 md:w-6 md:h-6 ${isSubscribed ? "text-yellow-500" : "text-gray-300"}`} />
+              </div>
+            </div>
+          ) : (
+            // LOGGED OUT STATE
+            <div className="flex items-center gap-3 md:gap-4">
+              <Link 
+                href="/login" 
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:block"
+              >
+                Sign In
+              </Link>
+              <Link 
+                href="/register" 
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 md:py-2 rounded-md text-sm font-medium transition-all shadow-md hover:shadow-red-600/20"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff, User } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -32,6 +32,7 @@ interface RegisterFormProps {
 
 const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -78,6 +79,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
 
         // Show success message and wait 1 second before redirecting
         setSuccessMessage(result.message || "Registration successful! Redirecting...");
+        queryClient.invalidateQueries({ queryKey: ["user"] });
         setTimeout(() => {
           router.push(result.redirectUrl || "/");
         }, 1000);

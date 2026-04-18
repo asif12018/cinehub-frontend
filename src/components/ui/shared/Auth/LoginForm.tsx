@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -23,7 +23,8 @@ interface LoginFormProps {
 
 const LoginForm = ({ redirectPath }: LoginFormProps) => {
     // const queryClient = useQueryClient();
-
+    
+    const queryClient = useQueryClient();
     const router = useRouter();
     const [serverError, setServerError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -54,6 +55,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
                 // Show success message and wait 1 second before redirecting
                 setSuccessMessage(result.message || "Login successful! Redirecting...");
+                queryClient.invalidateQueries({ queryKey: ["user"] });
                 setTimeout(() => {
                     router.push(result.redirectUrl || "/");
                 }, 1000);
