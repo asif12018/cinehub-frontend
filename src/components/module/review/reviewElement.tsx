@@ -3,18 +3,52 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Star, ThumbsUp, MessageSquare, UserCircle, Loader2 } from "lucide-react";
-// 🟢 Import your service! Adjust the path if needed.
+import { toast } from "sonner"; // 🟢 Imported Sonner for error handling
+
+// 🟢 Import your services! Adjust the paths if needed.
 import { getMovieReviewByMovieId } from "@/service/review.service"; 
+import { toggoleLike } from "@/service/like.service"; 
 
 // Sub-component for individual reviews to handle its own "show comments" state
 function ReviewCard({ review }: { review: any }) {
   const [showComments, setShowComments] = useState(false);
-  const [isLiked, setIsLiked] = useState(false); // Placeholder for future like functionality
+  console.log("Review Data received in card:", review.content, "Is Liked:", review.isLikedByCurrentUser);
+  
+  // 🟢 If your backend sends whether the current user liked it, initialize it here (e.g., review.isLikedByCurrentUser)
+// 🟢 FIXED: Initialize directly from the backend's calculated boolean!
+  const [isLiked, setIsLiked] = useState(review.isLikedByCurrentUser || false);
+  const [isLikeLoading, setIsLikeLoading] = useState(false);
 
   // Format date safely
   const formattedDate = new Date(review.publishedAt || review.createdAt).toLocaleDateString("en-US", {
     month: "short", day: "numeric", year: "numeric"
   });
+
+  // 🟢 NEW: The Toggle Like Handler
+  const handleToggleLike = async () => {
+    if (isLikeLoading) return;
+
+    try {
+      setIsLikeLoading(true);
+      
+      // Optimistic Update: instantly flip the UI state for a snappy UX
+      setIsLiked(!isLiked);
+
+      // Call the API (passing the review.id)
+      const res = await toggoleLike(review.id);
+
+      // If the backend fails, revert the optimistic update and show an error
+      if (!res?.success) {
+        setIsLiked(!isLiked);
+        toast.error("Failed to update like status.");
+      }
+    } catch (error) {
+      setIsLiked(!isLiked);
+      toast.error("Something went wrong while liking.");
+    } finally {
+      setIsLikeLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 md:p-6 transition-all hover:bg-white/10">
@@ -31,7 +65,7 @@ function ReviewCard({ review }: { review: any }) {
           </div>
         </div>
         
-        {/* 🟢 FIXED: Premium 10-Point Rating Badge */}
+        {/* Premium 10-Point Rating Badge */}
         <div className="flex items-center gap-1.5 bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/20 shadow-inner">
           <Star className="w-4 h-4 md:w-5 md:h-5 fill-yellow-500 text-yellow-500" />
           <span className="text-yellow-500 font-bold text-sm md:text-base">
@@ -61,11 +95,16 @@ function ReviewCard({ review }: { review: any }) {
 
       {/* FOOTER: Actions */}
       <div className="flex items-center gap-6 border-t border-gray-700/50 pt-4">
+        
+        {/* 🟢 UPDATED: Like Button hooked up to the handler */}
         <button 
-          onClick={() => setIsLiked(!isLiked)}
-          className={`flex items-center gap-2 text-sm font-medium transition-colors ${isLiked ? "text-blue-400" : "text-gray-400 hover:text-gray-200"}`}
+          onClick={handleToggleLike}
+          disabled={isLikeLoading}
+          className={`flex items-center gap-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+            isLiked ? "text-blue-400" : "text-gray-400 hover:text-gray-200"
+          }`}
         >
-          <ThumbsUp className={`w-4 h-4 ${isLiked ? "fill-current" : ""}`} /> 
+          <ThumbsUp className={`w-4 h-4 transition-all ${isLiked ? "fill-current scale-110" : ""}`} /> 
           Like
         </button>
         
