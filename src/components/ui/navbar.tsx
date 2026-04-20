@@ -1,21 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, User, Loader2, Sparkles, Crown } from "lucide-react"; // 🟢 Added Crown icon
+// 🟢 Added ListVideo, ShoppingBag, CreditCard for the dropdown menu
+import { Search, User, Loader2, Sparkles, Crown, LogOut, ListVideo, ShoppingBag, CreditCard } from "lucide-react"; 
 import Image from "next/image";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner"; 
+
 import { getUserInfo } from "@/service/auth.service";
 import { getMedia } from "@/service/media.service";
-import { useRouter } from "next/navigation";
-
-// 🟢 Import your new subscription service! Adjust the path if needed.
 import { getSubscriptionInfo } from "@/service/payment.service"; 
+
 
 export function Navbar() {
   const router = useRouter();
+  const queryClient = useQueryClient(); 
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  
+  // 🟢 NEW: State to manage the profile dropdown
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // 1. Fetch User Info
   const { data: user, isLoading: isLoadingUser } = useQuery({
@@ -23,15 +29,13 @@ export function Navbar() {
     queryFn: getUserInfo,
   });
 
-  // 🟢 2. Fetch Subscription Info (Only runs if the user is actually logged in!)
+  // 2. Fetch Subscription Info
   const { data: subResponse, isLoading: isLoadingSub } = useQuery({
-    queryKey: ["subscription", user?.id], // Cache it based on the user
+    queryKey: ["subscription", user?.id], 
     queryFn: getSubscriptionInfo,
-    enabled: !!user, // This prevents the API call if they are a guest!
+    enabled: !!user, 
   });
 
-  // Determine if they are subscribed based on your API's true/false response
-  // (Adjust this if your API returns the boolean inside a property like subResponse.data)
   const isSubscribed = subResponse === true || subResponse?.data === true || subResponse?.success === true;
 
   // 3. Fetch Search Results
@@ -43,6 +47,8 @@ export function Navbar() {
 
   const suggestions = searchResults?.data?.data || searchResults?.data || [];
 
+  // --- HANDLERS ---
+
   const handleSearchSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (searchTerm.trim()) {
@@ -51,8 +57,30 @@ export function Navbar() {
     }
   };
 
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await logoutUser();
+  //     if (res.success !== false) { 
+  //       toast.success("Logged out successfully");
+        
+  //       queryClient.setQueryData(["user"], null); 
+  //       queryClient.invalidateQueries({ queryKey: ["user"] });
+  //       queryClient.invalidateQueries({ queryKey: ["subscription"] });
+        
+  //       setIsProfileOpen(false); // Close dropdown
+  //       router.push("/"); 
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to log out");
+  //   }
+  // };
+
+  // 🟢 UPDATED: Close both search suggestions AND profile dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = () => setShowSuggestions(false);
+    const handleClickOutside = () => {
+      setShowSuggestions(false);
+      setIsProfileOpen(false);
+    };
     window.addEventListener("click", handleClickOutside);
     return () => window.removeEventListener("click", handleClickOutside);
   }, []);
@@ -146,14 +174,12 @@ export function Navbar() {
 
           {/* Conditional Auth UI */}
           {isLoadingUser || (user && isLoadingSub) ? (
-            // Loading state (Waits for both user AND subscription status)
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-gray-700 border-t-red-600 animate-spin" />
           ) : user ? (
             // LOGGED IN STATE
             <div className="flex items-center gap-3 md:gap-4">
               
               {!isSubscribed ? (
-                // 🔴 IF NOT SUBSCRIBED: Show Subscribe Button
                 <Link 
                   href="/pricing" 
                   className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black px-3 py-1.5 md:px-4 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all shadow-[0_0_10px_rgba(234,179,8,0.2)] hover:shadow-[0_0_15px_rgba(234,179,8,0.4)]"
@@ -163,23 +189,91 @@ export function Navbar() {
                   <span className="sm:hidden">Pro</span>
                 </Link>
               ) : (
-                // 🟢 IF SUBSCRIBED: Show VIP/PRO Badge
                 <div className="hidden sm:flex items-center gap-1 text-yellow-500 bg-yellow-500/10 px-2 py-1 rounded-md text-xs font-bold border border-yellow-500/20 shadow-[0_0_10px_rgba(234,179,8,0.1)]">
                   <Crown className="w-3.5 h-3.5" />
                   PRO
                 </div>
               )}
 
-              {/* User Avatar - Changes to GOLD border if they are subscribed! */}
-              <div 
-                className={`w-9 h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
-                  isSubscribed 
-                    ? "border-yellow-500 bg-yellow-500/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
-                    : "bg-gray-800 border-gray-700 hover:border-red-500 hover:bg-red-600/20"
-                }`}
-              >
-                <User className={`w-5 h-5 md:w-6 md:h-6 ${isSubscribed ? "text-yellow-500" : "text-gray-300"}`} />
+              {/* 🟢 NEW: PROFILE DROPDOWN WRAPPER */}
+              <div className="relative" onClick={(e) => e.stopPropagation()}>
+                
+                {/* User Avatar (Clickable to open menu) */}
+                <div 
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className={`relative overflow-hidden w-9 h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
+                    isSubscribed 
+                      ? "border-yellow-500 bg-yellow-500/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
+                      : "bg-gray-800 border-gray-700 hover:border-red-500 hover:bg-red-600/20"
+                  }`}
+                >
+                  {user.image ? (
+                    <img 
+                      src={user.image} 
+                      alt={user.name || "Profile"} 
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <User className={`w-5 h-5 md:w-6 md:h-6 ${isSubscribed ? "text-yellow-500" : "text-gray-300"}`} />
+                  )}
+                </div>
+
+                {/* 🟢 PROFILE DROPDOWN MENU */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-full mt-3 w-56 bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
+                    
+                    {/* User Info Header */}
+                    <div className="px-4 py-3 border-b border-gray-800 bg-white/5">
+                      <p className="text-sm font-medium text-white truncate">{user.name || "CineHub User"}</p>
+                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                    </div>
+                    
+                    {/* Menu Links */}
+                    <div className="p-2 flex flex-col gap-1">
+                      <Link 
+                        href="/watchlist" 
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <ListVideo className="w-4 h-4 text-gray-400" /> 
+                        Watchlist
+                      </Link>
+                      
+                      <Link 
+                        href="/purchases" 
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <ShoppingBag className="w-4 h-4 text-gray-400" /> 
+                        Purchase History
+                      </Link>
+
+                      <Link 
+                        href="/subscription" 
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <CreditCard className="w-4 h-4 text-gray-400" /> 
+                        Manage Subscription
+                      </Link>
+                    </div>
+
+                    {/* Logout Button */}
+                    <div className="p-2 border-t border-gray-800">
+                      <button 
+                      
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" /> 
+                        Log Out
+                      </button>
+                    
+                    </div>
+                  </div>
+                )}
               </div>
+
             </div>
           ) : (
             // LOGGED OUT STATE

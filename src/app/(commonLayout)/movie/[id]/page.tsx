@@ -76,7 +76,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     enabled: !!userInfoResponse?.id && !!movie?.id
   });
 
-  console.log('this user has review response', userReviewCheckResponse)
+  // console.log('this user has review response', userReviewCheckResponse)
 
  useEffect(() => {
     // 🟢 FIXED: We added 'userReviewCheckResponse === true' 

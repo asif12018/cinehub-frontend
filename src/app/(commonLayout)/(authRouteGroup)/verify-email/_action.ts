@@ -20,7 +20,7 @@ export const verifyEmail = async (data: { email: string; otp: string }) => {
       success: true,
       message: res.message || "Email verification successful",
       data: res.data,
-      redirectUrl: "/", // Tell the client component to go to the home page
+      redirectUrl: "/login", // Tell the client component to go to the home page
     };
   } catch (err: any) {
     return {

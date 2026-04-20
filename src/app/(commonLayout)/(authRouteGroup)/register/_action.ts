@@ -28,12 +28,13 @@ export const registerAction = async (
     const { role, email } = user;
 
     // Set cookies
-    await setTokenInCookies("accessToken", accessToken);
-    await setTokenInCookies("refreshToken", refreshToken);
+   
+    // await setTokenInCookies("accessToken", accessToken);
+    // await setTokenInCookies("refreshToken", refreshToken);
 
-    if (token) {
-      await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60);
-    }
+    // if (token) {
+    //   await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60);
+    // }
 
     await setTokenInCookies("userRole", role);
 
