@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Check, X, Crown, Sparkles, Loader2, AlertCircle, Film, MonitorPlay } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query"; 
+import { Check, X, Crown, Sparkles, Loader2, AlertCircle, MonitorPlay, CalendarX } from "lucide-react"; 
 import { useRouter } from "next/navigation";
 import { getUserInfo } from "@/service/auth.service";
-import { getSubscriptionInfo, purchaseAMovie } from "@/service/payment.service";
+import { getSubscriptionInfo, purchaseAMovie, cancellSubscription } from "@/service/payment.service"; 
 import { toast } from "sonner";
 
 export default function PricingPage() {
   const router = useRouter();
+  const queryClient = useQueryClient(); 
+  
+  // States
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false); 
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); 
 
   // 1. Fetch User Info
   const { data: user, isLoading: isLoadingUser } = useQuery({
@@ -25,29 +30,43 @@ export default function PricingPage() {
     enabled: !!user,
   });
 
+  // 🟢 1. Check for the cancel flag FIRST
+  const isSetToCancel = 
+    subResponse?.cancelAtPeriodEnd === true || 
+    subResponse?.data?.cancelAtPeriodEnd === true || 
+    subResponse?.data?.data?.cancelAtPeriodEnd === true;
+
+  // 🟢 2. Check Subscription State (Includes isSetToCancel so they don't get kicked out)
   const isSubscribed =
-    subResponse === true || subResponse?.data === true || subResponse?.success === true;
+    isSetToCancel || 
+    subResponse === true || 
+    subResponse?.data === true || 
+    subResponse?.success === true || 
+    subResponse?.data?.status === "ACTIVE" || 
+    subResponse?.status === "ACTIVE";
+
+  // 3. Safely extract the end date so we can show it to the user
+  const periodEndDate = 
+    subResponse?.data?.currentPeriodEnd || 
+    subResponse?.currentPeriodEnd || 
+    subResponse?.data?.data?.currentPeriodEnd;
+
   const isLoading = isLoadingUser || (user && isLoadingSub);
 
-  // 🟢 HANDLE CHECKOUT BUTTON CLICK
- // 🟢 HANDLE CHECKOUT BUTTON CLICK
+  // --- HANDLERS ---
+
   const handleSubscribeClick = async () => {
-    // 1. Ensure the user is logged in first
     if (!user) {
       toast.error("Please log in to subscribe!");
       router.push("/login");
       return;
     }
 
-    // 2. Trigger your existing checkout logic
     try {
       setIsCheckoutLoading(true);
-      
-      // Call your API with "SUBSCRIPTION". No movie ID is needed for a global sub!
       const checkoutUrl = await purchaseAMovie("SUBSCRIPTION"); 
       
       if (checkoutUrl) {
-        // Redirect the user to the payment gateway
         window.location.href = checkoutUrl; 
       } else {
         toast.error("Failed to create checkout session. Please try again.");
@@ -57,6 +76,27 @@ export default function PricingPage() {
       console.error("Checkout failed", error);
       toast.error("Something went wrong during checkout.");
       setIsCheckoutLoading(false);
+    }
+  };
+
+  const executeCancel = async () => {
+    try {
+      setIsCanceling(true);
+      const res = await cancellSubscription(user.id);
+      
+      if (res?.success || res?.data?.success) {
+        toast.success("Subscription canceled. You will not be billed again.");
+        // Instantly refresh the subscription query so the UI updates
+        queryClient.invalidateQueries({ queryKey: ["subscription", user?.id] });
+        setIsCancelModalOpen(false); 
+      } else {
+        toast.error(res?.message || "Failed to cancel subscription.");
+      }
+    } catch (error) {
+      console.error("Cancel failed", error);
+      toast.error("An error occurred while canceling.");
+    } finally {
+      setIsCanceling(false);
     }
   };
 
@@ -93,18 +133,44 @@ export default function PricingPage() {
                   </h2>
                   <p className="text-gray-400">Unlimited streaming. No ads. 4K HDR.</p>
                 </div>
-                <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                  <Check className="w-4 h-4" /> Active Status
-                </div>
+                
+                {/* 🟢 DYNAMIC BADGE BASED ON CANCELLATION STATUS */}
+                {isSetToCancel ? (
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                    <CalendarX className="w-4 h-4" /> Cancels at period end
+                  </div>
+                ) : (
+                  <div className="bg-green-500/10 border border-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
+                    <Check className="w-4 h-4" /> Active Status
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4">
-                <button className="w-full bg-white text-black font-bold py-3.5 rounded-lg hover:bg-gray-200 transition-colors">
+                <button 
+                  onClick={() => router.push('/movie')}
+                  className="w-full bg-white text-black font-bold py-3.5 rounded-lg hover:bg-gray-200 transition-colors"
+                >
                   Browse Movies
                 </button>
-                <button className="w-full bg-transparent border border-gray-700 text-gray-300 font-medium py-3.5 rounded-lg hover:text-white hover:border-gray-500 transition-colors">
-                  Manage Subscription Options
-                </button>
+                
+                {/* 🟢 HIDE CANCEL BUTTON IF ALREADY CANCELING */}
+                {!isSetToCancel ? (
+                  <button 
+                    onClick={() => setIsCancelModalOpen(true)}
+                    disabled={isCanceling}
+                    className="w-full flex items-center justify-center gap-2 bg-transparent border border-red-900/50 text-red-500 font-medium py-3.5 rounded-lg hover:text-white hover:bg-red-600 hover:border-red-600 transition-colors disabled:opacity-50"
+                  >
+                    Cancel Subscription
+                  </button>
+                ) : (
+                  <div className="text-center p-4 bg-gray-900/50 rounded-lg border border-gray-800">
+                    <p className="text-sm text-gray-400">
+                      Your subscription is scheduled to be canceled. You will retain access until the end of your billing cycle 
+                      {periodEndDate ? ` (${new Date(periodEndDate).toLocaleDateString()})` : ""}.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -154,7 +220,7 @@ export default function PricingPage() {
                 
                 <h3 className="text-xl font-medium text-red-500 mb-2">CineHub Pro</h3>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-bold text-white">$75</span>
+                  <span className="text-4xl font-bold text-white">$9.99</span>
                   <span className="text-gray-400 font-medium">/month</span>
                 </div>
                 <p className="text-sm text-gray-400 mb-6 border-b border-gray-800 pb-6">Cancel anytime. No hidden fees.</p>
@@ -179,7 +245,6 @@ export default function PricingPage() {
 
             </div>
 
-            {/* Bottom Trust Banner */}
             <div className="mt-16 text-center flex flex-col items-center justify-center gap-2 text-gray-500 text-sm">
               <AlertCircle className="w-5 h-5 mb-1" />
               <p>Secure payment processing.</p>
@@ -188,11 +253,47 @@ export default function PricingPage() {
           </div>
         )}
       </div>
+
+      {/* 🟢 CUSTOM CANCEL MODAL */}
+      {isCancelModalOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#141414] border border-gray-800 rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+            
+            <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-6 mx-auto">
+              <AlertCircle className="w-6 h-6 text-red-500" />
+            </div>
+            
+            <h3 className="text-2xl font-bold text-white text-center mb-2">Cancel Subscription?</h3>
+            <p className="text-gray-400 text-center mb-8">
+              Are you sure you want to cancel? You will still have full access to CineHub Pro until the end of your current billing period.
+            </p>
+            
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => setIsCancelModalOpen(false)}
+                disabled={isCanceling}
+                className="w-full bg-white text-black font-bold py-3.5 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                Nevermind, Keep Pro
+              </button>
+              
+              <button 
+                onClick={executeCancel}
+                disabled={isCanceling}
+                className="w-full bg-transparent border border-gray-700 text-gray-400 font-medium py-3.5 rounded-lg hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {isCanceling && <Loader2 className="w-4 h-4 animate-spin" />}
+                Yes, Cancel Subscription
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// 🟢 Helper Component for the checklist
+// Helper Component for the checklist
 function FeatureItem({ text, included, highlight = false }: { text: string; included: boolean; highlight?: boolean }) {
   return (
     <div className={`flex items-center gap-3 ${!included ? "opacity-50" : ""}`}>

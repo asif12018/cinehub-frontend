@@ -57,3 +57,29 @@ export async function checkTheMovieOnWatchList(mediaId: string) {
     return null;
   }
 }
+
+export async function GetUserWatchList() {
+  try{
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    const sessionToken = cookieStore.get("better-auth.session_token")?.value;
+
+    if (!accessToken) {
+      return null;
+    }
+
+    const res: any = await httpClient.get(
+      `${BASE_API_URL}/watchList`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}; better-auth.session_token=${sessionToken}`,
+        },
+      },
+    );
+
+    return res;
+  }catch(error:any){
+    console.log("watchlist error", error);
+    return null;
+  }
+}

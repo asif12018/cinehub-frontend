@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner"; 
 
 import { Navbar } from "@/components/ui/navbar";
-// 🟢 FIXED: Added CheckCircle to the imports
 import { Play, Info, X, ShoppingCart, CreditCard, Loader2, Plus, Check, Lock, CheckCircle } from "lucide-react"; 
 
 import { getMediaById } from "@/service/media.service"; 
@@ -65,22 +64,16 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     queryFn: () => getMediaById(id),
   });
 
-  // 🟢 FIXED: Moved this UP so we can safely use movie.id in the next query
   const movie = mediaResponse?.data || mediaResponse;
 
   // Fetch user review info
   const { data: userReviewCheckResponse, isLoading: isUserReviweCheckResponseLoading } = useQuery<any>({
     queryKey: ["user-review-check", movie?.id],
     queryFn: () => isUserHasAreview(movie?.id),
-    // 🟢 FIXED: Only run this query if we actually have BOTH the user ID and the movie ID
     enabled: !!userInfoResponse?.id && !!movie?.id
   });
 
-  // console.log('this user has review response', userReviewCheckResponse)
-
- useEffect(() => {
-    // 🟢 FIXED: We added 'userReviewCheckResponse === true' 
-    // Now it will correctly catch the boolean and hide the form!
+  useEffect(() => {
     if (
       userReviewCheckResponse === true || 
       userReviewCheckResponse?.data === true || 
@@ -122,7 +115,21 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     }
   }, [watchListCheckResponse]);
 
-  const isSubscribed = subscribtionResponse === true || subscribtionResponse?.data === true || subscribtionResponse?.success === true;
+  // 🟢 FIXED: Check if they are scheduled to cancel (but still have access right now)
+  const isSetToCancel = 
+    subscribtionResponse?.cancelAtPeriodEnd === true || 
+    subscribtionResponse?.data?.cancelAtPeriodEnd === true || 
+    subscribtionResponse?.data?.data?.cancelAtPeriodEnd === true;
+
+  // 🟢 FIXED: The ultimate check - includes isSetToCancel and status check!
+  const isSubscribed = 
+    isSetToCancel || 
+    subscribtionResponse === true || 
+    subscribtionResponse?.data === true || 
+    subscribtionResponse?.success === true ||
+    subscribtionResponse?.data?.status === "ACTIVE" ||
+    subscribtionResponse?.status === "ACTIVE";
+
   const hasPurchased = isPurchase === true || isPurchase?.data === true || isPurchase?.success === true;
 
   const hasAccess = isSubscribed || hasPurchased;
@@ -320,7 +327,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       <div className="w-full max-w-4xl mx-auto px-4 md:px-12">
         {isUserLoggedIn ? (
           <>
-            {/* 🟢 FIXED: Cleaned up logic and syntax! */}
             {isUserCreatedReview ? (
               <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-8 md:p-10 mb-8 flex flex-col items-center justify-center text-center transition-all hover:bg-white/10">
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4 border border-green-500/20 shadow-inner">

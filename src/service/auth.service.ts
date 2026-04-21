@@ -79,3 +79,39 @@ export async function getUserInfo() {
         return null;
     }
 }
+
+
+
+
+
+
+export async function logoutUserAction() {
+  try {
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get("better-auth.session_token")?.value;
+
+    if (sessionToken) {
+      // 1. Call your actual backend API to invalidate the session in the database
+      // If you are calling an external backend (like your Render server):
+      await fetch(`${BASE_API_URL}/auth/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      });
+
+      // OR if you are using your provided function directly in the Next.js server:
+      // await logOutUser(sessionToken);
+    }
+
+    // 2. CRITICAL: Delete the cookies from the user's browser!
+    cookieStore.delete("better-auth.session_token");
+    cookieStore.delete("accessToken"); // Delete this too if you use it
+    cookieStore.delete("refreshToken");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Logout failed:", error);
+    return { success: false, message: "Failed to log out" };
+  }
+}

@@ -66,7 +66,7 @@ export default function MediaPage() {
 
   return (
     <div className="min-h-screen bg-[#141414] text-white font-sans flex flex-col">
-      <Navbar />
+    
 
       <main className="pt-28 px-4 md:px-12 pb-16 flex-grow max-w-[2000px] mx-auto w-full">
         

@@ -30,7 +30,7 @@ function HomeContent() {
       {/* We only show the intro if the user isn't actively searching for something */}
       {!isSearching && <SplashIntro />}
 
-      <Navbar />
+      
       
       {!isSearching && <Hero />}
       

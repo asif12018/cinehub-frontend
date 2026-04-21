@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// 🟢 Added ListVideo, ShoppingBag, CreditCard for the dropdown menu
 import { Search, User, Loader2, Sparkles, Crown, LogOut, ListVideo, ShoppingBag, CreditCard } from "lucide-react"; 
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner"; 
 
-import { getUserInfo } from "@/service/auth.service";
+import { getUserInfo, logoutUserAction } from "@/service/auth.service";
 import { getMedia } from "@/service/media.service";
 import { getSubscriptionInfo } from "@/service/payment.service"; 
 
@@ -19,6 +18,7 @@ export function Navbar() {
   const queryClient = useQueryClient(); 
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   // 🟢 NEW: State to manage the profile dropdown
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -36,7 +36,20 @@ export function Navbar() {
     enabled: !!user, 
   });
 
-  const isSubscribed = subResponse === true || subResponse?.data === true || subResponse?.success === true;
+  // 🟢 FIXED: Check if they are scheduled to cancel (but still have access right now)
+  const isSetToCancel = 
+    subResponse?.cancelAtPeriodEnd === true || 
+    subResponse?.data?.cancelAtPeriodEnd === true || 
+    subResponse?.data?.data?.cancelAtPeriodEnd === true;
+
+  // 🟢 FIXED: The ultimate check - includes the full object status and cancel state!
+  const isSubscribed = 
+    isSetToCancel || 
+    subResponse === true || 
+    subResponse?.data === true || 
+    subResponse?.success === true ||
+    subResponse?.data?.status === "ACTIVE" ||
+    subResponse?.status === "ACTIVE";
 
   // 3. Fetch Search Results
   const { data: searchResults, isLoading: isSearching } = useQuery<any>({
@@ -46,6 +59,35 @@ export function Navbar() {
   });
 
   const suggestions = searchResults?.data?.data || searchResults?.data || [];
+
+  //logout feature
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      
+      // 1. Call the server action we just created
+      const res = await logoutUserAction();
+      
+      if (res.success) { 
+        toast.success("Logged out successfully");
+        
+        // 2. Clear React Query cache so it forgets the user and subscription data
+        queryClient.setQueryData(["user"], null); 
+        queryClient.removeQueries({ queryKey: ["user"] });
+        queryClient.removeQueries({ queryKey: ["subscription"] });
+        
+        // 3. Close the dropdown and redirect
+        setIsProfileOpen(false); 
+        router.push("/login"); 
+      } else {
+        toast.error("Failed to log out");
+      }
+    } catch (error) {
+      toast.error("An error occurred during logout");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   // --- HANDLERS ---
 
@@ -232,7 +274,7 @@ export function Navbar() {
                     {/* Menu Links */}
                     <div className="p-2 flex flex-col gap-1">
                       <Link 
-                        href="/watchlist" 
+                        href="/watchList" 
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                       >
@@ -241,7 +283,7 @@ export function Navbar() {
                       </Link>
                       
                       <Link 
-                        href="/purchases" 
+                        href="/payment-history" 
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                       >
@@ -250,7 +292,7 @@ export function Navbar() {
                       </Link>
 
                       <Link 
-                        href="/subscription" 
+                        href="/pricing" 
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                       >
@@ -262,6 +304,8 @@ export function Navbar() {
                     {/* Logout Button */}
                     <div className="p-2 border-t border-gray-800">
                       <button 
+                       
+                       onClick={()=>handleLogout()}
                       
                         className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors"
                       >
