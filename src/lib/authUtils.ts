@@ -21,7 +21,7 @@ export const commonProtectedRoutes : RouteConfig = {
 }
 
 export const userProtectedRoutes: RouteConfig = {
-    pattern: [/^\/(watchList|subscription)(\/|$)/], 
+    pattern: [/^\/(watchList|subscription|payment-history)(\/|$)/], 
     exact: []
 };
 

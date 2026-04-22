@@ -13,7 +13,7 @@ const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const getAllGenres = async () => {
   try {
-    const response: any = await httpClient.get(`/genre`);
+    const response: any = await httpClient.get(`${BASE_API_URL}/genre`);
     
     // httpClient already returns the parsed response body (response.data from axios)
     if (response.success && Array.isArray(response.data)) {

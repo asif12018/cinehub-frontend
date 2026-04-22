@@ -12,14 +12,25 @@ export default function AddMoviesPage() {
   const [actorSearch, setActorSearch] = useState("");
   const [isActorDropdownOpen, setIsActorDropdownOpen] = useState(false);
 
-  const { data: actors = [] } = useQuery({ queryKey: ['actors'], queryFn: getAllActors });
-  const { data: genres = [] } = useQuery({ queryKey: ['genres'], queryFn: getAllGenres });
+ // 🟢 Wrap them in arrow functions!
+  const { data: actors = [] } = useQuery({ 
+    queryKey: ['actors'], 
+    queryFn: () => getAllActors() 
+  });
+  
+  const { data: genres = [] } = useQuery({ 
+    queryKey: ['genres'], 
+    queryFn: () => getAllGenres() 
+  });
 
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     title: "", synopsis: "", releaseYear: "", streamingUrl: "", trailerUrl: "",
     pricingTier: "PREMIUM", status: "PUBLISHED", rentPrice: "5", buyPrice: "30",
+    type: "MOVIE",
     actorIds: [] as string[], genreIds: [] as string[]
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const [posterFile, setPosterFile] = useState<File | null>(null);
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
@@ -42,27 +53,70 @@ export default function AddMoviesPage() {
     }));
   };
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!posterFile || !backdropFile) return toast.error("Upload both images!");
+  //   setIsLoading(true);
+  //   const toastId = toast.loading("Creating Media...");
+  //   try {
+  //     const submitData = new FormData();
+  //     Object.entries(formData).forEach(([key, value]) => {
+  //       if (Array.isArray(value)) {
+  //         value.forEach(item => submitData.append(key, item));
+  //       } else {
+  //         submitData.append(key, value as string);
+  //       }
+  //     });
+      
+  //     const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  //     submitData.append("slug", slug);
+      
+  //     submitData.append("poster", posterFile);
+  //     submitData.append("backdrop", backdropFile);
+  //     await createNewMedia(submitData);
+  //     toast.success("Published!", { id: toastId });
+  //   } catch (error: any) {
+  //     toast.error("Failed!", { id: toastId });
+  //   } finally { setIsLoading(false); }
+  // };
+
+  // Modern Input Styles
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!posterFile || !backdropFile) return toast.error("Upload both images!");
     setIsLoading(true);
     const toastId = toast.loading("Creating Media...");
+    
     try {
       const submitData = new FormData();
+      
       Object.entries(formData).forEach(([key, value]) => {
-        if (Array.isArray(value)) submitData.append(key, JSON.stringify(value));
-        else submitData.append(key, value as string);
+        if (Array.isArray(value)) {
+          value.forEach(item => submitData.append(key, item));
+        } else {
+          submitData.append(key, value as string);
+        }
       });
+      
+      const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      submitData.append("slug", slug);
+      
       submitData.append("poster", posterFile);
       submitData.append("backdrop", backdropFile);
+      
       await createNewMedia(submitData);
       toast.success("Published!", { id: toastId });
+      
+      setFormData(initialFormState);
+      setPosterFile(null);
+      setBackdropFile(null);
+      setActorSearch("");
+      (e.target as HTMLFormElement).reset();
     } catch (error: any) {
       toast.error("Failed!", { id: toastId });
     } finally { setIsLoading(false); }
   };
-
-  // Modern Input Styles
   const inputBase = "w-full bg-[#1a1a1a] border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500";
   const labelBase = "block text-sm font-semibold text-gray-300 mb-2 uppercase tracking-wider";
 
@@ -90,17 +144,17 @@ export default function AddMoviesPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className={labelBase}>Movie Title</label>
-                  <input required name="title" placeholder="Enter title" className={inputBase} onChange={handleChange} />
+                  <input required name="title" value={formData.title} placeholder="Enter title" className={inputBase} onChange={handleChange} />
                 </div>
                 <div>
                   <label className={labelBase}>Release Year</label>
-                  <input required name="releaseYear" type="number" placeholder="2026" className={inputBase} onChange={handleChange} />
+                  <input required name="releaseYear" value={formData.releaseYear} type="number" placeholder="2026" className={inputBase} onChange={handleChange} />
                 </div>
               </div>
 
               <div>
                 <label className={labelBase}>Synopsis</label>
-                <textarea required name="synopsis" rows={5} placeholder="What is this movie about?" className={inputBase} onChange={handleChange} />
+                <textarea required name="synopsis" value={formData.synopsis} rows={5} placeholder="What is this movie about?" className={inputBase} onChange={handleChange} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,14 +162,14 @@ export default function AddMoviesPage() {
                   <label className={labelBase}>Streaming Source</label>
                   <div className="relative">
                     <LinkIcon className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
-                    <input required name="streamingUrl" placeholder="Video URL" className={`${inputBase} pl-10`} onChange={handleChange} />
+                    <input required name="streamingUrl" value={formData.streamingUrl} placeholder="Video URL" className={`${inputBase} pl-10`} onChange={handleChange} />
                   </div>
                 </div>
                 <div>
                   <label className={labelBase}>Trailer URL</label>
                   <div className="relative">
                     <LinkIcon className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
-                    <input required name="trailerUrl" placeholder="Trailer URL" className={`${inputBase} pl-10`} onChange={handleChange} />
+                    <input required name="trailerUrl" value={formData.trailerUrl} placeholder="Trailer URL" className={`${inputBase} pl-10`} onChange={handleChange} />
                   </div>
                 </div>
               </div>
@@ -200,12 +254,17 @@ export default function AddMoviesPage() {
               <label className={labelBase}>Pricing & Status</label>
               
               <div className="space-y-4">
-                <select name="status" className={inputBase} onChange={handleChange}>
+                <select name="type" className={inputBase} onChange={handleChange} value={formData.type}>
+                  <option value="MOVIE">Movie</option>
+                  <option value="SERIES">Series</option>
+                </select>
+
+                <select name="status" className={inputBase} onChange={handleChange} value={formData.status}>
                   <option value="PUBLISHED">Published</option>
                   <option value="DRAFT">Draft</option>
                 </select>
 
-                <select name="pricingTier" className={inputBase} onChange={handleChange}>
+                <select name="pricingTier" className={inputBase} onChange={handleChange} value={formData.pricingTier}>
                   <option value="PREMIUM">Premium</option>
                   <option value="FREE">Free</option>
                 </select>
@@ -213,11 +272,11 @@ export default function AddMoviesPage() {
                 <div className="flex gap-4">
                   <div className="relative flex-1">
                     <DollarSign className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
-                    <input name="rentPrice" type="number" placeholder="Rent" className={`${inputBase} pl-10`} onChange={handleChange} disabled={formData.pricingTier === "FREE"} />
+                    <input name="rentPrice" value={formData.rentPrice} type="number" placeholder="Rent" className={`${inputBase} pl-10`} onChange={handleChange} disabled={formData.pricingTier === "FREE"} />
                   </div>
                   <div className="relative flex-1">
                     <DollarSign className="absolute left-3 top-3.5 w-4 h-4 text-gray-500" />
-                    <input name="buyPrice" type="number" placeholder="Buy" className={`${inputBase} pl-10`} onChange={handleChange} disabled={formData.pricingTier === "FREE"} />
+                    <input name="buyPrice" value={formData.buyPrice} type="number" placeholder="Buy" className={`${inputBase} pl-10`} onChange={handleChange} disabled={formData.pricingTier === "FREE"} />
                   </div>
                 </div>
               </div>

@@ -57,7 +57,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                 setSuccessMessage(result.message || "Login successful! Redirecting...");
                 queryClient.invalidateQueries({ queryKey: ["user"] });
                 setTimeout(() => {
-                    router.push(result.redirectUrl || "/");
+                    window.location.href = result.redirectUrl || "/";
                 }, 1000);
             } catch (error : any) {
                 // Let Next.js handle redirect errors instead of treating them as login failures

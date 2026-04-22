@@ -115,13 +115,11 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     }
   }, [watchListCheckResponse]);
 
-  // 🟢 FIXED: Check if they are scheduled to cancel (but still have access right now)
   const isSetToCancel = 
     subscribtionResponse?.cancelAtPeriodEnd === true || 
     subscribtionResponse?.data?.cancelAtPeriodEnd === true || 
     subscribtionResponse?.data?.data?.cancelAtPeriodEnd === true;
 
-  // 🟢 FIXED: The ultimate check - includes isSetToCancel and status check!
   const isSubscribed = 
     isSetToCancel || 
     subscribtionResponse === true || 
@@ -132,7 +130,14 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
   const hasPurchased = isPurchase === true || isPurchase?.data === true || isPurchase?.success === true;
 
-  const hasAccess = isSubscribed || hasPurchased;
+  // 🟢 NEW: Admin VIP check! Safely checks deep into the object just in case
+  const isAdmin = 
+    userInfoResponse?.role === "ADMIN" || 
+    userInfoResponse?.data?.role === "ADMIN" || 
+    userInfoResponse?.data?.data?.role === "ADMIN";
+
+  // 🟢 NEW: Add isAdmin to the final access logic
+  const hasAccess = isSubscribed || hasPurchased || isAdmin;
 
   const rentPrice = movie?.rentPrice ? `$${movie.rentPrice}` : "$3.00";
   const buyPrice = movie?.buyPrice ? `$${movie.buyPrice}` : "$15.00";
@@ -189,7 +194,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   };
 
   // Prevent UI flickering while fetching statuses
-  if (isLoading || isSubscribtionLoading || isPurchaseLoading || isWatchListCheckLoading) {
+  if (isLoading || isSubscribtionLoading || isPurchaseLoading || isWatchListCheckLoading || isUserInfoResponseLoading) {
     return (
       <div className="min-h-screen bg-[#141414] text-white flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin" />

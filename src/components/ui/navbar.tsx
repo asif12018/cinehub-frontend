@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, User, Loader2, Sparkles, Crown, LogOut, ListVideo, ShoppingBag, CreditCard } from "lucide-react"; 
+// 🟢 NEW: Imported Shield for the Admin Badge!
+import { Search, User, Loader2, Sparkles, Crown, LogOut, ListVideo, ShoppingBag, CreditCard, Shield } from "lucide-react"; 
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,7 +13,6 @@ import { getUserInfo, logoutUserAction } from "@/service/auth.service";
 import { getMedia } from "@/service/media.service";
 import { getSubscriptionInfo } from "@/service/payment.service"; 
 
-
 export function Navbar() {
   const router = useRouter();
   const queryClient = useQueryClient(); 
@@ -20,7 +20,6 @@ export function Navbar() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   
-  // 🟢 NEW: State to manage the profile dropdown
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // 1. Fetch User Info
@@ -36,13 +35,11 @@ export function Navbar() {
     enabled: !!user, 
   });
 
-  // 🟢 FIXED: Check if they are scheduled to cancel (but still have access right now)
   const isSetToCancel = 
     subResponse?.cancelAtPeriodEnd === true || 
     subResponse?.data?.cancelAtPeriodEnd === true || 
     subResponse?.data?.data?.cancelAtPeriodEnd === true;
 
-  // 🟢 FIXED: The ultimate check - includes the full object status and cancel state!
   const isSubscribed = 
     isSetToCancel || 
     subResponse === true || 
@@ -50,6 +47,9 @@ export function Navbar() {
     subResponse?.success === true ||
     subResponse?.data?.status === "ACTIVE" ||
     subResponse?.status === "ACTIVE";
+
+  // 🟢 NEW: Clean Admin Check
+  const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
 
   // 3. Fetch Search Results
   const { data: searchResults, isLoading: isSearching } = useQuery<any>({
@@ -60,23 +60,17 @@ export function Navbar() {
 
   const suggestions = searchResults?.data?.data || searchResults?.data || [];
 
-  //logout feature
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      
-      // 1. Call the server action we just created
       const res = await logoutUserAction();
       
       if (res.success) { 
         toast.success("Logged out successfully");
-        
-        // 2. Clear React Query cache so it forgets the user and subscription data
         queryClient.setQueryData(["user"], null); 
         queryClient.removeQueries({ queryKey: ["user"] });
         queryClient.removeQueries({ queryKey: ["subscription"] });
         
-        // 3. Close the dropdown and redirect
         setIsProfileOpen(false); 
         router.push("/login"); 
       } else {
@@ -89,8 +83,6 @@ export function Navbar() {
     }
   };
 
-  // --- HANDLERS ---
-
   const handleSearchSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (searchTerm.trim()) {
@@ -99,25 +91,6 @@ export function Navbar() {
     }
   };
 
-  // const handleLogout = async () => {
-  //   try {
-  //     const res = await logoutUser();
-  //     if (res.success !== false) { 
-  //       toast.success("Logged out successfully");
-        
-  //       queryClient.setQueryData(["user"], null); 
-  //       queryClient.invalidateQueries({ queryKey: ["user"] });
-  //       queryClient.invalidateQueries({ queryKey: ["subscription"] });
-        
-  //       setIsProfileOpen(false); // Close dropdown
-  //       router.push("/"); 
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to log out");
-  //   }
-  // };
-
-  // 🟢 UPDATED: Close both search suggestions AND profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       setShowSuggestions(false);
@@ -161,7 +134,6 @@ export function Navbar() {
             )}
           </form>
 
-          {/* Suggestion Dropdown */}
           {showSuggestions && searchTerm.trim().length > 1 && (
             <div className="absolute top-full mt-2 w-full bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden max-h-[400px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
               {suggestions.length > 0 ? (
@@ -208,7 +180,7 @@ export function Navbar() {
             </Link>
           )}
           
-          {(user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") && (
+          {isAdmin && (
             <Link href="/dashboard" className="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors">
               Dashboard
             </Link>
@@ -218,10 +190,15 @@ export function Navbar() {
           {isLoadingUser || (user && isLoadingSub) ? (
             <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-gray-700 border-t-red-600 animate-spin" />
           ) : user ? (
-            // LOGGED IN STATE
             <div className="flex items-center gap-3 md:gap-4">
               
-              {!isSubscribed ? (
+              {/* 🟢 BADGE LOGIC: Admin > Subscribed > Unsubscribed */}
+              {isAdmin ? (
+                <div className="hidden sm:flex items-center gap-1 text-red-500 bg-red-500/10 px-2 py-1 rounded-md text-xs font-bold border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.1)]">
+                  <Shield className="w-3.5 h-3.5" />
+                  ADMIN
+                </div>
+              ) : !isSubscribed ? (
                 <Link 
                   href="/pricing" 
                   className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black px-3 py-1.5 md:px-4 md:py-1.5 rounded-md text-xs md:text-sm font-bold transition-all shadow-[0_0_10px_rgba(234,179,8,0.2)] hover:shadow-[0_0_15px_rgba(234,179,8,0.4)]"
@@ -237,14 +214,16 @@ export function Navbar() {
                 </div>
               )}
 
-              {/* 🟢 NEW: PROFILE DROPDOWN WRAPPER */}
+              {/* Profile Dropdown Wrapper */}
               <div className="relative" onClick={(e) => e.stopPropagation()}>
                 
-                {/* User Avatar (Clickable to open menu) */}
+                {/* Avatar */}
                 <div 
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className={`relative overflow-hidden w-9 h-9 md:w-10 md:h-10 border rounded-full flex items-center justify-center transition-all cursor-pointer shadow-md ${
-                    isSubscribed 
+                    isAdmin
+                      ? "border-red-500 bg-red-500/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+                      : isSubscribed 
                       ? "border-yellow-500 bg-yellow-500/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)]" 
                       : "bg-gray-800 border-gray-700 hover:border-red-500 hover:bg-red-600/20"
                   }`}
@@ -257,21 +236,19 @@ export function Navbar() {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <User className={`w-5 h-5 md:w-6 md:h-6 ${isSubscribed ? "text-yellow-500" : "text-gray-300"}`} />
+                    <User className={`w-5 h-5 md:w-6 md:h-6 ${isAdmin ? "text-red-500" : isSubscribed ? "text-yellow-500" : "text-gray-300"}`} />
                   )}
                 </div>
 
-                {/* 🟢 PROFILE DROPDOWN MENU */}
+                {/* Dropdown Menu */}
                 {isProfileOpen && (
                   <div className="absolute right-0 top-full mt-3 w-56 bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
                     
-                    {/* User Info Header */}
                     <div className="px-4 py-3 border-b border-gray-800 bg-white/5">
                       <p className="text-sm font-medium text-white truncate">{user.name || "CineHub User"}</p>
                       <p className="text-xs text-gray-400 truncate">{user.email}</p>
                     </div>
                     
-                    {/* Menu Links */}
                     <div className="p-2 flex flex-col gap-1">
                       <Link 
                         href="/watchList" 
@@ -282,37 +259,38 @@ export function Navbar() {
                         Watchlist
                       </Link>
                       
-                      <Link 
-                        href="/payment-history" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-                      >
-                        <ShoppingBag className="w-4 h-4 text-gray-400" /> 
-                        Purchase History
-                      </Link>
+                      {/* 🟢 HIDE PAYMENT/SUBSCRIPTION LINKS FOR ADMINS */}
+                      {!isAdmin && (
+                        <>
+                          <Link 
+                            href="/payment-history" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                          >
+                            <ShoppingBag className="w-4 h-4 text-gray-400" /> 
+                            Purchase History
+                          </Link>
 
-                      <Link 
-                        href="/pricing" 
-                        onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-                      >
-                        <CreditCard className="w-4 h-4 text-gray-400" /> 
-                        Manage Subscription
-                      </Link>
+                          <Link 
+                            href="/pricing" 
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                          >
+                            <CreditCard className="w-4 h-4 text-gray-400" /> 
+                            Manage Subscription
+                          </Link>
+                        </>
+                      )}
                     </div>
 
-                    {/* Logout Button */}
                     <div className="p-2 border-t border-gray-800">
                       <button 
-                       
-                       onClick={()=>handleLogout()}
-                      
+                        onClick={()=>handleLogout()}
                         className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors"
                       >
                         <LogOut className="w-4 h-4" /> 
                         Log Out
                       </button>
-                    
                     </div>
                   </div>
                 )}
@@ -320,7 +298,6 @@ export function Navbar() {
 
             </div>
           ) : (
-            // LOGGED OUT STATE
             <div className="flex items-center gap-3 md:gap-4">
               <Link 
                 href="/login" 

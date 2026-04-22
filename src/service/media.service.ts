@@ -46,10 +46,10 @@ export async function createNewMedia (mediaData: FormData) {
     const accessToken = cookieStore.get("accessToken")?.value;
     const sessionToken = cookieStore.get("better-auth.session_token")?.value;
     // We send mediaData directly, and explicitly tell Axios it's multipart/form-data
-    const response = await httpClient.post("/media/create-media", mediaData, {
+    const response = await httpClient.post(`${BASE_API_URL}/media/create-media`, mediaData, {
       headers: {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${accessToken}; better-auth.session_token=${sessionToken}`,
+        "Content-Type": "multipart/form-data",
       },
     });
 

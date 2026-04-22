@@ -14,7 +14,7 @@ export function Hero() {
             rgba(0, 0, 0, 0.4) 0%, 
             rgba(0, 0, 0, 0.7) 50%, 
             rgba(0, 0, 0, 0.9) 100%),
-            url('https://image.tmdb.org/t/p/original/4QP91WnZ6bXNV4UNd1HM6vV8ORa.jpg')`, // Oppenheimer-like hero bg
+            url('/banner.png')`, // Oppenheimer-like hero bg
         }}
       />
 
