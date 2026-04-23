@@ -1,48 +1,80 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function SplashIntro() {
-  // We start by assuming we should show it, but we'll check session storage immediately
   const [showSplash, setShowSplash] = useState(true);
   const [isFading, setIsFading] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     // Check if the user has already seen the intro during this browser session
     const hasSeenIntro = sessionStorage.getItem("hasSeenIntro");
     if (hasSeenIntro) {
       setShowSplash(false);
+      return;
     }
+
+    // Safety fallback: if video takes more than 8s to start, skip the intro
+    // This prevents users on slow connections from being stuck forever
+    timeoutRef.current = setTimeout(() => {
+      handleDone();
+    }, 8000);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
-  const handleVideoEnd = () => {
-    // Start the fade out animation
+  const handleDone = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setIsFading(true);
-    
-    // Wait for the CSS fade transition to finish (500ms) before removing from DOM
     setTimeout(() => {
       setShowSplash(false);
-      // Save to session storage so it doesn't play again until they close the browser tab
       sessionStorage.setItem("hasSeenIntro", "true");
-    }, 500); 
+    }, 500);
   };
 
   if (!showSplash) return null;
 
   return (
-    <div 
+    <div
       className={`fixed inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-500 ${
         isFading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
+      {/* Loading spinner shown while video is buffering */}
+      {!isVideoReady && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              border: "4px solid rgba(255,255,255,0.15)",
+              borderTop: "4px solid #e50914",
+              borderRadius: "50%",
+              animation: "spin 0.8s linear infinite",
+            }}
+          />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>
+            Loading…
+          </p>
+        </div>
+      )}
+
       <video
-        src="/cinehub-intro.mp4" 
+        src="/cinehub-intro.mp4"
         autoPlay
-        muted // Note: Browsers block unmuted autoplay. Muted guarantees it plays instantly.
+        muted
         playsInline
-        onEnded={handleVideoEnd}
+        preload="auto"
+        onCanPlay={() => setIsVideoReady(true)}
+        onEnded={handleDone}
         className="w-full h-full object-cover"
+        style={{ opacity: isVideoReady ? 1 : 0, transition: "opacity 0.3s" }}
       />
     </div>
   );
-}
+}
