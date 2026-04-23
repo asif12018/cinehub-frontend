@@ -20,10 +20,16 @@ export async function GET() {
       return NextResponse.json(null, { status: 200 });
     }
 
+    const cookieHeader = cookieStore
+      .getAll()
+      .map((cookie) => `${cookie.name}=${cookie.value}`)
+      .join("; ");
+
     const res = await fetch(`${BASE_API_URL}/payment/getSubscription`, {
       headers: {
         Authorization: `Bearer ${accessToken}; better-auth.session_token=${sessionToken}`,
         "Content-Type": "application/json",
+        Cookie: cookieHeader,
       },
       cache: "no-store",
     });
