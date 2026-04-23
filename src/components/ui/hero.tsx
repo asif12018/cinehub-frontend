@@ -31,13 +31,20 @@ export function Hero() {
           {/* Play Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/watch/1"
+              href="/movie"
               className="group flex items-center gap-4 px-8 py-4 bg-white text-black rounded-md font-semibold max-w-max hover:bg-gray-200 transition-all duration-300 shadow-2xl hover:shadow-red-500/25 hover:-translate-y-1"
             >
               <Play className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               Play
             </Link>
-            <button className="group flex items-center gap-4 px-8 py-4 border border-white/50 text-white rounded-md font-semibold max-w-max hover:bg-white/20 hover:border-white transition-all duration-300">
+            <button
+              onClick={() =>
+                document
+                  .getElementById("pricing")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="group flex items-center gap-4 px-8 py-4 border border-white/50 text-white rounded-md font-semibold max-w-max hover:bg-white/20 hover:border-white transition-all duration-300"
+            >
               <Info className="w-6 h-6" />
               More Info
             </button>
