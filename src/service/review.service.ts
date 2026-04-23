@@ -189,3 +189,22 @@ export async function deleteReview(reviewId: string) {
     return { success: false, message: error.response?.data?.message };
   }
 }
+
+export async function getPublishedReviews() {
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get("accessToken")?.value;
+    const sessionToken = cookieStore.get("better-auth.session_token")?.value;
+
+    const res:any = await httpClient.get(`${BASE_API_URL}/reviews/published`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}; better-auth.session_token=${sessionToken}`,
+      },
+    });
+
+    return res.data;
+  } catch (error: any) {
+    console.error("Error fetching published reviews:", error);
+    return null;
+  }
+}

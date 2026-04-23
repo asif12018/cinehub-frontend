@@ -2,26 +2,36 @@
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { MessageSquareWarning, CheckCircle, Trash2, XCircle } from "lucide-react";
+import { MessageSquareWarning, CheckCircle, Trash2, XCircle, CheckSquare, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
-import { getUnPublishedReviews, updateReviewStatus, deleteReview } from "@/service/review.service";
+import { getUnPublishedReviews, getPublishedReviews, updateReviewStatus, deleteReview } from "@/service/review.service";
 import { ConfirmationModal } from "@/components/ui/shared/ConfirmationModal";
 
-export default function PendingReviewsPage() {
+export default function ManageReviewsPage() {
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState<"pending" | "published">("pending");
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
-    action: "APPROVE" | "REJECT" | null;
+    action: "APPROVE" | "REJECT" | "UNPUBLISH" | "DELETE_PUBLISHED" | null;
     reviewId: string | null;
   }>({ isOpen: false, action: null, reviewId: null });
 
-  const { data: response, isLoading } = useQuery({
+  const { data: pendingResponse, isLoading: isPendingLoading } = useQuery({
     queryKey: ["admin-pending-reviews"],
     queryFn: () => getUnPublishedReviews()
   });
 
+  const { data: publishedResponse, isLoading: isPublishedLoading } = useQuery({
+    queryKey: ["admin-published-reviews"],
+    queryFn: () => getPublishedReviews()
+  });
+
   // Extract the reviews array (handles different possible wrapper structures)
-  const reviews = response?.data || response || [];
+  const pendingReviews = pendingResponse?.data || pendingResponse || [];
+  const publishedReviews = publishedResponse?.data || publishedResponse || [];
+
+  const reviews = activeTab === "pending" ? pendingReviews : publishedReviews;
+  const isLoading = activeTab === "pending" ? isPendingLoading : isPublishedLoading;
 
   const statusMutation = useMutation({
     mutationFn: ({ id, status }: { id: string; status: string }) => updateReviewStatus(id, status),
@@ -32,16 +42,8 @@ export default function PendingReviewsPage() {
         toast.success("Review status updated successfully");
         setModalState({ isOpen: false, action: null, reviewId: null });
         
-        // Optimistically remove from list so UI updates instantly
-        queryClient.setQueryData(["admin-pending-reviews"], (oldData: any) => {
-          if (!oldData) return oldData;
-          const filterFn = (r: any) => r.id !== variables.id;
-          if (Array.isArray(oldData)) return oldData.filter(filterFn);
-          if (oldData.data && Array.isArray(oldData.data)) return { ...oldData, data: oldData.data.filter(filterFn) };
-          return oldData;
-        });
-        
         queryClient.invalidateQueries({ queryKey: ["admin-pending-reviews"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-published-reviews"] });
       }
     },
     onError: () => {
@@ -58,16 +60,8 @@ export default function PendingReviewsPage() {
         toast.success("Review deleted successfully");
         setModalState({ isOpen: false, action: null, reviewId: null });
 
-        // Optimistically remove from list so UI updates instantly
-        queryClient.setQueryData(["admin-pending-reviews"], (oldData: any) => {
-          if (!oldData) return oldData;
-          const filterFn = (r: any) => r.id !== variables;
-          if (Array.isArray(oldData)) return oldData.filter(filterFn);
-          if (oldData.data && Array.isArray(oldData.data)) return { ...oldData, data: oldData.data.filter(filterFn) };
-          return oldData;
-        });
-
         queryClient.invalidateQueries({ queryKey: ["admin-pending-reviews"] });
+        queryClient.invalidateQueries({ queryKey: ["admin-published-reviews"] });
       }
     },
     onError: () => {
@@ -75,12 +69,8 @@ export default function PendingReviewsPage() {
     }
   });
 
-  const handleApprove = (id: string) => {
-    setModalState({ isOpen: true, action: "APPROVE", reviewId: id });
-  };
-
-  const handleReject = (id: string) => {
-    setModalState({ isOpen: true, action: "REJECT", reviewId: id });
+  const handleAction = (id: string, action: "APPROVE" | "REJECT" | "UNPUBLISH" | "DELETE_PUBLISHED") => {
+    setModalState({ isOpen: true, action, reviewId: id });
   };
 
   const handleConfirmAction = () => {
@@ -88,10 +78,49 @@ export default function PendingReviewsPage() {
     
     if (modalState.action === "APPROVE") {
       statusMutation.mutate({ id: modalState.reviewId, status: "PUBLISHED" });
-    } else if (modalState.action === "REJECT") {
+    } else if (modalState.action === "UNPUBLISH") {
+      statusMutation.mutate({ id: modalState.reviewId, status: "PENDING" });
+    } else if (modalState.action === "REJECT" || modalState.action === "DELETE_PUBLISHED") {
       deleteMutation.mutate(modalState.reviewId);
     }
   };
+
+  const getModalConfig = () => {
+    switch (modalState.action) {
+      case "APPROVE":
+        return {
+          title: "Approve Review?",
+          message: "Are you sure you want to approve and publish this review? It will be visible to all users.",
+          confirmText: "Yes, Approve",
+          variant: "success" as const
+        };
+      case "UNPUBLISH":
+        return {
+          title: "Unpublish Review?",
+          message: "Are you sure you want to unpublish this review? It will be moved back to pending.",
+          confirmText: "Yes, Unpublish",
+          variant: "danger" as const
+        };
+      case "REJECT":
+        return {
+          title: "Reject Review?",
+          message: "Are you sure you want to permanently delete this pending review? This action cannot be undone.",
+          confirmText: "Yes, Reject",
+          variant: "danger" as const
+        };
+      case "DELETE_PUBLISHED":
+        return {
+          title: "Delete Review?",
+          message: "Are you sure you want to permanently delete this published review? This action cannot be undone.",
+          confirmText: "Yes, Delete",
+          variant: "danger" as const
+        };
+      default:
+        return { title: "", message: "", confirmText: "", variant: "danger" as const };
+    }
+  };
+
+  const modalConfig = getModalConfig();
 
   return (
     <div className="min-h-screen w-full flex-1 bg-[#0a0a0a] p-4 md:p-8 font-sans text-white">
@@ -101,11 +130,37 @@ export default function PendingReviewsPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-3">
-              <MessageSquareWarning className="w-8 h-8 text-yellow-500" />
-              Pending Reviews
+              <MessageSquare className="w-8 h-8 text-yellow-500" />
+              Manage Reviews
             </h1>
-            <p className="text-gray-400 mt-2">Manage user reviews awaiting moderation.</p>
+            <p className="text-gray-400 mt-2">Manage pending and published user reviews.</p>
           </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-4 border-b border-gray-800 pb-2">
+          <button
+            onClick={() => setActiveTab("pending")}
+            className={`flex items-center gap-2 px-4 py-2 font-semibold text-sm transition-colors border-b-2 ${
+              activeTab === "pending" 
+                ? "border-yellow-500 text-yellow-500" 
+                : "border-transparent text-gray-400 hover:text-gray-200"
+            }`}
+          >
+            <MessageSquareWarning className="w-4 h-4" />
+            Pending Reviews
+          </button>
+          <button
+            onClick={() => setActiveTab("published")}
+            className={`flex items-center gap-2 px-4 py-2 font-semibold text-sm transition-colors border-b-2 ${
+              activeTab === "published" 
+                ? "border-green-500 text-green-500" 
+                : "border-transparent text-gray-400 hover:text-gray-200"
+            }`}
+          >
+            <CheckSquare className="w-4 h-4" />
+            Published Reviews
+          </button>
         </div>
 
         {/* Content Section */}
@@ -135,7 +190,7 @@ export default function PendingReviewsPage() {
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                       <MessageSquareWarning className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p>No pending reviews found. You're all caught up!</p>
+                      <p>No {activeTab} reviews found.</p>
                     </td>
                   </tr>
                 ) : (
@@ -159,28 +214,55 @@ export default function PendingReviewsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="px-2 py-1 rounded text-xs font-semibold bg-yellow-600/20 text-yellow-400">
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                          review.status === "PUBLISHED" 
+                            ? "bg-green-600/20 text-green-400"
+                            : "bg-yellow-600/20 text-yellow-400"
+                        }`}>
                           {review.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-3">
-                          <button 
-                            onClick={() => handleApprove(review.id)}
-                            disabled={statusMutation.isPending}
-                            className="p-2 text-green-400 hover:text-green-300 hover:bg-green-900/30 rounded-lg transition-colors disabled:opacity-50"
-                            title="Approve & Publish"
-                          >
-                            <CheckCircle className="w-5 h-5" />
-                          </button>
-                          <button 
-                            onClick={() => handleReject(review.id)}
-                            disabled={deleteMutation.isPending}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
-                            title="Reject & Delete"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
+                          {activeTab === "pending" ? (
+                            <>
+                              <button 
+                                onClick={() => handleAction(review.id, "APPROVE")}
+                                disabled={statusMutation.isPending}
+                                className="p-2 text-green-400 hover:text-green-300 hover:bg-green-900/30 rounded-lg transition-colors disabled:opacity-50"
+                                title="Approve & Publish"
+                              >
+                                <CheckCircle className="w-5 h-5" />
+                              </button>
+                              <button 
+                                onClick={() => handleAction(review.id, "REJECT")}
+                                disabled={deleteMutation.isPending}
+                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
+                                title="Reject & Delete"
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button 
+                                onClick={() => handleAction(review.id, "UNPUBLISH")}
+                                disabled={statusMutation.isPending}
+                                className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-yellow-900/30 rounded-lg transition-colors disabled:opacity-50"
+                                title="Unpublish"
+                              >
+                                <XCircle className="w-5 h-5" />
+                              </button>
+                              <button 
+                                onClick={() => handleAction(review.id, "DELETE_PUBLISHED")}
+                                disabled={deleteMutation.isPending}
+                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
+                                title="Delete"
+                              >
+                                <Trash2 className="w-5 h-5" />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -199,15 +281,11 @@ export default function PendingReviewsPage() {
         onClose={() => setModalState({ isOpen: false, action: null, reviewId: null })}
         onConfirm={handleConfirmAction}
         isPending={statusMutation.isPending || deleteMutation.isPending}
-        title={modalState.action === "APPROVE" ? "Approve Review?" : "Reject Review?"}
-        message={
-          modalState.action === "APPROVE" 
-            ? "Are you sure you want to approve and publish this review? It will be visible to all users."
-            : "Are you sure you want to permanently delete this pending review? This action cannot be undone."
-        }
-        confirmText={modalState.action === "APPROVE" ? "Yes, Approve" : "Yes, Reject"}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        confirmText={modalConfig.confirmText}
         cancelText="Cancel"
-        variant={modalState.action === "APPROVE" ? "success" : "danger"}
+        variant={modalConfig.variant}
       />
     </div>
   );
