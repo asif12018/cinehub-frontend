@@ -32,8 +32,12 @@ export async function GET() {
       return NextResponse.json(null, { status: 200 });
     }
 
-    const data = await res.json();
-    return NextResponse.json(data, { status: 200 });
+    const json = await res.json();
+    // Log the raw response in dev so we can confirm the exact shape
+    if (process.env.NODE_ENV === "development") {
+      console.log("[/api/subscription] raw backend response:", JSON.stringify(json));
+    }
+    return NextResponse.json(json, { status: 200 });
   } catch {
     return NextResponse.json(null, { status: 200 });
   }

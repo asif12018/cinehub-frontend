@@ -64,8 +64,12 @@ export function Navbar() {
     subResponse === true ||
     subResponse?.data === true ||
     subResponse?.success === true ||
+    // Direct status at root
+    subResponse?.status === "ACTIVE" ||
+    // Nested one level: { data: { status: "ACTIVE" } }
     subResponse?.data?.status === "ACTIVE" ||
-    subResponse?.status === "ACTIVE";
+    // Nested two levels: { data: { data: { status: "ACTIVE" } } }
+    subResponse?.data?.data?.status === "ACTIVE";
 
   // 🟢 NEW: Clean Admin Check
   const isAdmin = user?.role === "ADMIN" || user?.role === "SUPER_ADMIN";
