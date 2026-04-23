@@ -150,7 +150,7 @@ cinehub-frontend/
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/cinehub-frontend.git
+   git clone https://github.com/asif12018/cinetube-frontend.git
    cd cinehub-frontend
    ```
 
