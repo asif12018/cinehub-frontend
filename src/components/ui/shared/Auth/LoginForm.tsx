@@ -185,7 +185,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
             <Link href="/sendOtpVerification" className="text-white font-medium hover:underline">Reset password</Link>
         </p>
         <p className="text-[16px] text-[#737373]">
-            New to CineHub?{" "}
+            New to CineTube?{" "}
             <Link
                 href="/register"
                 className="text-white font-medium hover:underline"

@@ -22,7 +22,7 @@ export function Hero() {
       <div className="relative z-10 flex items-end h-full max-w-7xl mx-auto px-4 md:px-8 pb-20 md:pb-32">
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl leading-tight">
-            CineHub
+            CineTube
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-lg leading-relaxed">
             Watch movies and TV shows online. Stream anywhere, anytime.

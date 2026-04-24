@@ -163,7 +163,7 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
           <UserCircle className="w-10 h-10 text-gray-400" />
           <div>
             <p className="font-semibold text-gray-200 flex items-center gap-2">
-              {review.user?.name || "CineHub User"}
+              {review.user?.name || "CineTube User"}
               
               {/* DYNAMIC STATUS BADGE */}
               {review.status !== "PUBLISHED" && (

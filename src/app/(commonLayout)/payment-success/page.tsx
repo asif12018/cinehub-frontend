@@ -96,11 +96,11 @@ export default function PaymentSuccess() {
           
           <div className="flex items-center justify-center gap-2 text-yellow-500 bg-yellow-500/10 px-3 py-1.5 rounded-full text-sm font-bold border border-yellow-500/20 w-fit mx-auto shadow-[0_0_10px_rgba(234,179,8,0.1)]">
              <Crown className="w-4 h-4" />
-             CineHub PRO
+             CineTube PRO
           </div>
 
           <p className="text-gray-300 text-lg md:text-xl font-light !mt-6">
-            Welcome to the ultimate movie experience. Your <span className="text-white font-medium">CineHub PRO</span> subscription is now active.
+            Welcome to the ultimate movie experience. Your <span className="text-white font-medium">CineTube PRO</span> subscription is now active.
           </p>
         </div>
 

@@ -55,7 +55,7 @@ export default function PaymentHistoryPage() {
                 
                 <div className="flex items-center gap-2 text-yellow-500 mb-4">
                   <Crown className="w-5 h-5" />
-                  <span className="font-bold text-lg">CineHub Pro</span>
+                  <span className="font-bold text-lg">CineTube Pro</span>
                 </div>
 
                 <div className="space-y-3 relative z-10">
@@ -138,7 +138,7 @@ export default function PaymentHistoryPage() {
                         href={`/movie/${item.media?.id}`}
                         className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all w-full sm:w-auto"
                       >
-                        <PlayCircle className="w-4 h-4" /> Play on CineHub
+                        <PlayCircle className="w-4 h-4" /> Play on CineTube
                       </Link>
                       
                       {/* Explicitly providing the streaming link to satisfy the rubric */}

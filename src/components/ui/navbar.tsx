@@ -174,7 +174,7 @@ export function Navbar() {
           href="/"
           className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent shrink-0 tracking-tight"
         >
-          CineHub
+          CineTube
         </Link>
 
         {/* Search Section */}
@@ -422,7 +422,7 @@ export function Navbar() {
                   <div className="absolute right-0 top-full mt-3 w-56 bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
                     <div className="px-4 py-3 border-b border-gray-800 bg-white/5">
                       <p className="text-sm font-medium text-white truncate">
-                        {user.name || "CineHub User"}
+                        {user.name || "CineTube User"}
                       </p>
                       <p className="text-xs text-gray-400 truncate">
                         {user.email}

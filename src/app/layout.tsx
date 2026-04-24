@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CineTube",
   description:
-    "Watch movies and TV shows online. Stream anywhere, anytime on CineHub.",
+    "Watch movies and TV shows online. Stream anywhere, anytime on CineTube.",
 };
 
 export default function RootLayout({

@@ -16,7 +16,7 @@ export default function DashboardLayout({
       {/* Mobile Topbar */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-800 bg-[#141414] sticky top-0 z-30">
         <span className="font-bold text-xl bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
-          CineHub Admin
+          CineTube Admin
         </span>
         <button 
           onClick={() => setIsSidebarOpen(true)} 

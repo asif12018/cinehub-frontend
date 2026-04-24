@@ -122,14 +122,14 @@ export default function PricingPage() {
             <div className="text-center mb-10">
               <Crown className="w-16 h-16 text-yellow-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(234,179,8,0.4)]" />
               <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">Welcome to PRO</h1>
-              <p className="text-gray-400 text-lg">Thank you for being a premium member of CineHub.</p>
+              <p className="text-gray-400 text-lg">Thank you for being a premium member of CineTube.</p>
             </div>
 
             <div className="bg-[#141414] border border-yellow-500/30 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(234,179,8,0.1)] max-w-2xl mx-auto">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-800 pb-8 mb-8">
                 <div>
                   <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-2">
-                    CineHub <span className="text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded text-sm uppercase tracking-wider border border-yellow-500/20">Pro Plan</span>
+                    CineTube <span className="text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded text-sm uppercase tracking-wider border border-yellow-500/20">Pro Plan</span>
                   </h2>
                   <p className="text-gray-400">Unlimited streaming. No ads. 4K HDR.</p>
                 </div>
@@ -265,7 +265,7 @@ export default function PricingPage() {
             
             <h3 className="text-2xl font-bold text-white text-center mb-2">Cancel Subscription?</h3>
             <p className="text-gray-400 text-center mb-8">
-              Are you sure you want to cancel? You will still have full access to CineHub Pro until the end of your current billing period.
+              Are you sure you want to cancel? You will still have full access to CineTube Pro until the end of your current billing period.
             </p>
             
             <div className="flex flex-col gap-3">

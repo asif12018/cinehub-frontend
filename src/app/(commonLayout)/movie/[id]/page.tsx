@@ -364,7 +364,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             </h3>
             
             <p className="text-gray-400 max-w-md mx-auto mb-8 leading-relaxed">
-              To read reviews or share your own thoughts about this movie, please log in to your CineHub account.
+              To read reviews or share your own thoughts about this movie, please log in to your CineTube account.
             </p>
 
             <Link 
