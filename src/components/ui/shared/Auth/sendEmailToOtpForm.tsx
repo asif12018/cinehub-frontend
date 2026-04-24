@@ -39,7 +39,7 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
       try {
         const result = (await mutateAsync(value)) as any;
 
-        console.log('this is result', result);
+        // console.log('this is result', result);
 
         if (!result.success) {
           setServerError(result.message || "Failed to send OTP. Please try again.");

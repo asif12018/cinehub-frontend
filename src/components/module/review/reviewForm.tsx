@@ -64,7 +64,7 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
       const res:any = await createReview(payload, movieId);
       
       // 🚨 DEBUG: This will show you exactly what your API returned in the browser console
-      console.log("RAW CREATE REVIEW RESPONSE:", res);
+      // console.log("RAW CREATE REVIEW RESPONSE:", res);
 
       // 🟢 BULLETPROOF SUCCESS CHECK
       // It now checks if 'success' is true OR if the backend returned the new review's 'id'

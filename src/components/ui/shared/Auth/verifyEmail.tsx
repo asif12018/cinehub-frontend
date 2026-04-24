@@ -80,7 +80,7 @@ export default function OtpVerifyForm({ email }: OtpVerifyFormProps) {
 
  const handleResend = async () => {
   setLoading(true);
-  console.log('this is email', email)
+  // console.log('this is email', email)
   const result = await resendOtpAction(email);
   
   if (result.success) {
