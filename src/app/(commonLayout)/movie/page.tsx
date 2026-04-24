@@ -134,6 +134,7 @@ export default function MediaPage() {
               <option value="APPLE_TV">Apple TV</option>
               <option value="HBO_MAX">HBO Max</option>
               <option value="DISNEY_PLUS">Disney Plus</option>
+              <option value="OTHER">Other</option>
             </select>
 
             <select
