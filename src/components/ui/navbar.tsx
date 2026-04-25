@@ -430,14 +430,31 @@ export function Navbar() {
                     </div>
 
                     <div className="p-2 flex flex-col gap-1">
-                      <Link
+                      {/* <Link
                         href="/watchList"
                         onClick={() => setIsProfileOpen(false)}
                         className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                       >
                         <ListVideo className="w-4 h-4 text-gray-400" />
                         Watchlist
-                      </Link>
+                      </Link> */}
+                      {
+                        !isAdmin ? ( <Link
+                        href="/watchList"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <ListVideo className="w-4 h-4 text-gray-400" />
+                        Watchlist
+                      </Link>):( <Link
+                        href="/movies"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <ListVideo className="w-4 h-4 text-gray-400" />
+                        movies
+                      </Link>)
+                      }
 
                       {/* 🟢 HIDE PAYMENT/SUBSCRIPTION LINKS FOR ADMINS */}
                       {!isAdmin && (
@@ -461,6 +478,16 @@ export function Navbar() {
                           </Link>
                         </>
                       )}
+                    </div>
+
+                    <div className="p-2 border-t border-gray-800">
+                      <Link href={"/faq"}>faq</Link>
+                    </div>
+                    <div className="p-2 border-t border-gray-800">
+                      <Link href={"/about"}>About us</Link>
+                    </div>
+                    <div className="p-2 border-t border-gray-800">
+                      <Link href={"/contact"}>Contact us</Link>
                     </div>
 
                     <div className="p-2 border-t border-gray-800">
