@@ -5,16 +5,16 @@ import { ChevronDown, MessageCircleQuestion } from "lucide-react";
 
 const faqs = [
   {
-    question: "How much does CineHub cost?",
-    answer: "CineHub offers a free tier with ads, or a premium subscription for $75/month. The premium subscription grants you ad-free streaming, ultra HD 4K quality, and access to our exclusive editor's picks."
+    question: "How much does Cinetube cost?",
+    answer: "Cinetube offers a free tier with ads, or a premium subscription for $75/month. The premium subscription grants you ad-free streaming, ultra HD 4K quality, and access to our exclusive editor's picks."
   },
   {
     question: "Can I cancel my subscription at any time?",
     answer: "Yes! There are no long-term contracts or cancellation fees. You can easily cancel your premium subscription online at any time from your account dashboard."
   },
   {
-    question: "What devices can I use to watch CineHub?",
-    answer: "You can watch CineHub on almost any internet-connected device. This includes smart TVs, game consoles, streaming media players, smartphones, tablets, and web browsers."
+    question: "What devices can I use to watch Cinetube?",
+    answer: "You can watch Cinetube on almost any internet-connected device. This includes smart TVs, game consoles, streaming media players, smartphones, tablets, and web browsers."
   },
   {
     question: "How do I write a review?",

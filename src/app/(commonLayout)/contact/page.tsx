@@ -21,8 +21,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-200">Email Us</p>
-                  <p className="text-gray-400 text-sm mt-1">support@cinehub.com</p>
-                  <p className="text-gray-400 text-sm">press@cinehub.com</p>
+                  <p className="text-gray-400 text-sm mt-1">support@cinetube.com</p>
+                  <p className="text-gray-400 text-sm">press@cinetube.com</p>
                 </div>
               </div>
 

@@ -9,7 +9,7 @@ export default function AboutPage() {
           Redefining Your <span className="text-red-600">Cinematic</span> Experience
         </h1>
         <p className="text-lg text-gray-400 leading-relaxed">
-          At CineHub, we believe that stories have the power to change the world. Our mission is to bring the greatest movies, series, and documentaries from across the globe directly to your screen, in the highest quality possible.
+          At CineTube, we believe that stories have the power to change the world. Our mission is to bring the greatest movies, series, and documentaries from across the globe directly to your screen, in the highest quality possible.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export default function AboutPage() {
         <div className="flex-1 space-y-6">
           <h2 className="text-3xl md:text-4xl font-bold">Our Story</h2>
           <p className="text-gray-300 leading-relaxed">
-            Founded in 2024, CineHub started as a passion project among a small group of filmmakers and developers who were frustrated by the fragmented streaming landscape. We wanted a single, beautifully designed platform where cinephiles could discover, rate, and discuss the art of film.
+            Founded in 2024, CineTube started as a passion project among a small group of filmmakers and developers who were frustrated by the fragmented streaming landscape. We wanted a single, beautifully designed platform where cinephiles could discover, rate, and discuss the art of film.
           </p>
           <p className="text-gray-300 leading-relaxed">
             Today, we serve millions of users worldwide, continuously innovating our recommendation algorithms and player technology to provide the ultimate viewing experience. Welcome to the future of entertainment.
