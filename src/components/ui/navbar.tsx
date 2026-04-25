@@ -14,6 +14,9 @@ import {
   CreditCard,
   Shield,
   Bell,
+  HelpCircle,
+  Info,
+  Mail,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -480,14 +483,31 @@ export function Navbar() {
                       )}
                     </div>
 
-                    <div className="p-2 border-t border-gray-800">
-                      <Link href={"/faq"}>faq</Link>
-                    </div>
-                    <div className="p-2 border-t border-gray-800">
-                      <Link href={"/about"}>About us</Link>
-                    </div>
-                    <div className="p-2 border-t border-gray-800">
-                      <Link href={"/contact"}>Contact us</Link>
+                    <div className="p-2 border-t border-gray-800 flex flex-col gap-1">
+                      <Link
+                        href="/faq"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <HelpCircle className="w-4 h-4 text-gray-400" />
+                        FAQ
+                      </Link>
+                      <Link
+                        href="/about"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <Info className="w-4 h-4 text-gray-400" />
+                        About us
+                      </Link>
+                      <Link
+                        href="/contact"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                      >
+                        <Mail className="w-4 h-4 text-gray-400" />
+                        Contact us
+                      </Link>
                     </div>
 
                     <div className="p-2 border-t border-gray-800">
