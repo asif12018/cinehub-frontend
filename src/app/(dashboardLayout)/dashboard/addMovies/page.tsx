@@ -164,20 +164,20 @@ export default function AddMoviesPage() {
     }
   };
   const inputBase =
-    "w-full bg-[#1a1a1a] border border-gray-700 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500";
+    "w-full bg-[#1a1a1a] border border-border rounded-lg py-3 px-4 text-foreground focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500";
   const labelBase =
-    "block text-sm font-semibold text-gray-300 mb-2 uppercase tracking-wider";
+    "block text-sm font-semibold text-foreground mb-2 uppercase tracking-wider";
 
   return (
-    <div className="min-h-screen w-full flex-1 bg-[#0a0a0a] p-4 md:p-8 font-sans">
+    <div className="min-h-screen w-full flex-1 bg-card p-4 md:p-8 font-sans">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-10 border-b border-gray-800 pb-6">
+        <div className="flex items-center justify-between mb-10 border-b border-border pb-6">
           <div>
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-4xl font-extrabold text-foreground tracking-tight">
               Create New Media
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-muted-foreground mt-2">
               Add cinematic content to your global library.
             </p>
           </div>
@@ -192,7 +192,7 @@ export default function AddMoviesPage() {
         >
           {/* Left Column: Main Details */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-[#141414] border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
+            <div className="bg-background border border-border p-8 rounded-2xl shadow-xl space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className={labelBase}>Movie Title</label>
@@ -296,7 +296,7 @@ export default function AddMoviesPage() {
             </div>
 
             {/* Cast & Genre Section */}
-            <div className="bg-[#141414] border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
+            <div className="bg-background border border-border p-8 rounded-2xl shadow-xl space-y-6">
               <div>
                 <label className={labelBase}>Select Genres</label>
                 <div className="flex flex-wrap gap-2">
@@ -305,7 +305,7 @@ export default function AddMoviesPage() {
                       key={g.id}
                       type="button"
                       onClick={() => toggleArrayItem(g.id, "genreIds")}
-                      className={`px-4 py-2 rounded-md text-xs font-bold transition-all border ${formData.genreIds.includes(g.id) ? "bg-red-600 border-red-600 text-white" : "bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-500"}`}
+                      className={`px-4 py-2 rounded-md text-xs font-bold transition-all border ${formData.genreIds.includes(g.id) ? "bg-red-600 border-red-600 text-foreground" : "bg-gray-900 border-border text-muted-foreground hover:border-gray-500"}`}
                     >
                       {g.name}
                     </button>
@@ -349,7 +349,7 @@ export default function AddMoviesPage() {
                     }
                   />
                   {isActorDropdownOpen && (
-                    <div className="absolute z-50 w-full mt-2 bg-[#1a1a1a] border border-gray-700 rounded-xl max-h-60 overflow-y-auto shadow-2xl custom-scrollbar">
+                    <div className="absolute z-50 w-full mt-2 bg-[#1a1a1a] border border-border rounded-xl max-h-60 overflow-y-auto shadow-2xl custom-scrollbar">
                       {actors
                         .filter((a: any) => {
                           if (!actorSearch.trim()) return true;
@@ -362,9 +362,9 @@ export default function AddMoviesPage() {
                           <div
                             key={a.id}
                             onClick={() => toggleArrayItem(a.id, "actorIds")}
-                            className="p-3 hover:bg-red-600/10 cursor-pointer flex items-center justify-between border-b border-gray-800 last:border-0"
+                            className="p-3 hover:bg-red-600/10 cursor-pointer flex items-center justify-between border-b border-border last:border-0"
                           >
-                            <span className="text-gray-300">{a.name}</span>
+                            <span className="text-foreground">{a.name}</span>
                             {formData.actorIds.includes(a.id) && (
                               <Check className="w-4 h-4 text-red-600" />
                             )}
@@ -379,11 +379,11 @@ export default function AddMoviesPage() {
 
           {/* Right Column: Uploads & Pricing */}
           <div className="space-y-6">
-            <div className="bg-[#141414] border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
+            <div className="bg-background border border-border p-8 rounded-2xl shadow-xl space-y-6">
               <label className={labelBase}>Media Assets</label>
 
               <div className="space-y-4">
-                <div className="group relative border-2 border-dashed border-gray-800 hover:border-red-600/50 rounded-xl p-6 transition-all text-center">
+                <div className="group relative border-2 border-dashed border-border hover:border-red-600/50 rounded-xl p-6 transition-all text-center">
                   <ImageIcon className="w-8 h-8 text-gray-600 mx-auto mb-2 group-hover:text-red-500" />
                   <p className="text-xs text-gray-500 mb-2 uppercase font-bold">
                     Poster Image
@@ -401,7 +401,7 @@ export default function AddMoviesPage() {
                   )}
                 </div>
 
-                <div className="group relative border-2 border-dashed border-gray-800 hover:border-red-600/50 rounded-xl p-6 transition-all text-center">
+                <div className="group relative border-2 border-dashed border-border hover:border-red-600/50 rounded-xl p-6 transition-all text-center">
                   <ImageIcon className="w-8 h-8 text-gray-600 mx-auto mb-2 group-hover:text-red-500" />
                   <p className="text-xs text-gray-500 mb-2 uppercase font-bold">
                     Backdrop Image
@@ -421,7 +421,7 @@ export default function AddMoviesPage() {
               </div>
             </div>
 
-            <div className="bg-[#141414] border border-gray-800 p-8 rounded-2xl shadow-xl space-y-6">
+            <div className="bg-background border border-border p-8 rounded-2xl shadow-xl space-y-6">
               <label className={labelBase}>Pricing & Status</label>
 
               <div className="space-y-4">
@@ -486,7 +486,7 @@ export default function AddMoviesPage() {
               <button
                 disabled={isLoading}
                 type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold uppercase tracking-widest shadow-lg shadow-red-600/20 transition-all active:scale-95 disabled:opacity-50"
+                className="w-full bg-red-600 hover:bg-red-700 text-foreground py-4 rounded-xl font-bold uppercase tracking-widest shadow-lg shadow-red-600/20 transition-all active:scale-95 disabled:opacity-50"
               >
                 {isLoading ? "Publishing..." : "Create Movie"}
               </button>

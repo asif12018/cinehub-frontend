@@ -102,14 +102,14 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
   };
 
   return (
-    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 md:p-6 mb-8">
-      <h3 className="text-xl font-bold text-white mb-4">Write a Review</h3>
+    <div className="bg-black/5 dark:bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-5 md:p-6 mb-8">
+      <h3 className="text-xl font-bold text-foreground mb-4">Write a Review</h3>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         
         {/* RATING STARS */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">Rating</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-2">Rating</label>
           <div className="flex gap-1" onMouseLeave={() => setHoveredRating(0)}>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
               <Star
@@ -119,7 +119,7 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
                 className={`w-8 h-8 cursor-pointer transition-colors ${
                   star <= (hoveredRating || rating)
                     ? "fill-yellow-500 text-yellow-500"
-                    : "text-gray-600 hover:text-gray-400"
+                    : "text-gray-600 hover:text-muted-foreground"
                 }`}
               />
             ))}
@@ -128,22 +128,22 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
 
         {/* TEXT AREA */}
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">Your Review</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-2">Your Review</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What did you think of the movie?"
-            className="w-full bg-black/40 border border-gray-700 rounded-md p-3 text-white focus:outline-none focus:border-red-500 min-h-[120px] transition-colors resize-y"
+            className="w-full bg-black/40 border border-border rounded-md p-3 text-foreground focus:outline-none focus:border-red-500 min-h-[120px] transition-colors resize-y"
           />
         </div>
 
         {/* TAGS DROPDOWN */}
         <div className="relative">
-          <label className="block text-sm font-medium text-gray-400 mb-2">Tags (Optional)</label>
+          <label className="block text-sm font-medium text-muted-foreground mb-2">Tags (Optional)</label>
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between bg-black/40 border border-gray-700 rounded-md p-3 text-left text-gray-300 hover:border-gray-500 transition-colors"
+            className="w-full flex items-center justify-between bg-black/40 border border-border rounded-md p-3 text-left text-foreground hover:border-gray-500 transition-colors"
           >
             <span>
               {selectedTags.length > 0 
@@ -154,7 +154,7 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
           </button>
 
           {isDropdownOpen && (
-            <div className="absolute z-50 w-full mt-2 bg-[#1a1a1a] border border-gray-700 rounded-md shadow-2xl max-h-60 overflow-y-auto">
+            <div className="absolute z-50 w-full mt-2 bg-[#1a1a1a] border border-border rounded-md shadow-2xl max-h-60 overflow-y-auto">
               {isLoadingTags ? (
                 <div className="p-4 text-center text-gray-500 text-sm">Loading tags...</div>
               ) : (
@@ -166,13 +166,13 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
                         key={tag.id}
                         onClick={() => toggleTag(tag.id)}
                         className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
-                          isSelected ? "bg-red-600/20 text-red-400" : "hover:bg-white/5 text-gray-300"
+                          isSelected ? "bg-red-600/20 text-red-400" : "hover:bg-black/5 dark:bg-white/5 text-foreground"
                         }`}
                       >
                         <div className={`w-4 h-4 rounded-[4px] border flex items-center justify-center ${
                           isSelected ? "border-red-500 bg-red-500" : "border-gray-500"
                         }`}>
-                          {isSelected && <Check className="w-3 h-3 text-white" />}
+                          {isSelected && <Check className="w-3 h-3 text-foreground" />}
                         </div>
                         <span className="text-sm">{tag.name}</span>
                       </div>
@@ -189,7 +189,7 @@ export default function CreateReviewForm({ movieId }: { movieId: string }) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex items-center justify-center gap-2 bg-red-600 text-white px-6 py-3 rounded-md font-bold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center gap-2 bg-red-600 text-foreground px-6 py-3 rounded-md font-bold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
             {isSubmitting ? "Posting..." : "Post Review"}

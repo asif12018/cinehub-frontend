@@ -64,7 +64,7 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
   });
 
   return (
-    <Card className="font-sans w-full max-w-[450px] mx-auto bg-black/75 sm:bg-black/80 text-white border-0 shadow-none px-4 py-8 sm:p-12 sm:pb-16 rounded-md">
+    <Card className="font-sans w-full max-w-[450px] mx-auto bg-black/75 sm:bg-black/80 text-foreground border-0 shadow-none px-4 py-8 sm:p-12 sm:pb-16 rounded-md">
       <CardHeader className="text-left px-0 pt-0">
         <CardTitle className="text-[32px] font-semibold mb-2">Forgot Password</CardTitle>
         <p className="text-[16px] text-[#737373] mb-6">
@@ -82,7 +82,7 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-4 [&_label]:sr-only [&_input]:bg-[#333] [&_input]:text-white [&_input]:border-none [&_input]:h-[48px] [&_input]:rounded-[4px] [&_input]:px-5 focus-visible:[&_input]:ring-0 focus:[&_input]:border-b-2 focus:[&_input]:border-[#e87c03]"
+          className="space-y-4 [&_label]:sr-only [&_input]:bg-[#333] [&_input]:text-foreground [&_input]:border-none [&_input]:h-[48px] [&_input]:rounded-[4px] [&_input]:px-5 focus-visible:[&_input]:ring-0 focus:[&_input]:border-b-2 focus:[&_input]:border-[#e87c03]"
         >
           <form.Field
             name="email"
@@ -99,14 +99,14 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
           </form.Field>
 
           {serverError && (
-            <Alert className="bg-[#e87c03] border-none text-white font-medium p-4 mt-4">
-              <AlertDescription className="text-white font-semibold">{serverError}</AlertDescription>
+            <Alert className="bg-[#e87c03] border-none text-foreground font-medium p-4 mt-4">
+              <AlertDescription className="text-foreground font-semibold">{serverError}</AlertDescription>
             </Alert>
           )}
 
           {successMessage && (
-            <Alert className="bg-[#1a8a3c] border border-green-400/40 text-white font-medium p-4 mt-4">
-              <AlertDescription className="text-white font-semibold">{successMessage}</AlertDescription>
+            <Alert className="bg-[#1a8a3c] border border-green-400/40 text-foreground font-medium p-4 mt-4">
+              <AlertDescription className="text-foreground font-semibold">{successMessage}</AlertDescription>
             </Alert>
           )}
 
@@ -114,7 +114,7 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
             <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
               {([canSubmit, isSubmitting]) => (
                 <AppSubmitButton
-                  className="w-full bg-[#E50914] hover:bg-[#C11119] text-white h-[48px] font-bold text-[16px] rounded-[4px]"
+                  className="w-full bg-[#E50914] hover:bg-[#C11119] text-foreground h-[48px] font-bold text-[16px] rounded-[4px]"
                   isPending={isSubmitting || isPending}
                   pendingLabel="Sending OTP..."
                   disabled={!canSubmit}
@@ -136,7 +136,7 @@ export const RequestOtpForm = ({ redirectPath }: RequestOtpFormProps) => {
       <CardFooter className="flex flex-col items-start bg-transparent px-0 border-t-0 pt-2 space-y-4">
         <p className="text-[16px] text-[#737373]">
           Remember your password?{" "}
-          <Link href="/login" className="text-white font-medium hover:underline">
+          <Link href="/login" className="text-foreground font-medium hover:underline">
             Sign In
           </Link>
         </p>

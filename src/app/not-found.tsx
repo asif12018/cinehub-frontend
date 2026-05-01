@@ -143,7 +143,7 @@ export default function NotFound() {
         </h2>
 
         <div className="space-y-3 mb-14 max-w-lg mx-auto opacity-80 font-sans relative z-10">
-          <p className="text-gray-300 text-lg md:text-xl font-medium">
+          <p className="text-foreground text-lg md:text-xl font-medium">
             The page you are looking for has been taken.
           </p>
           <p className="text-red-400/80 text-sm italic tracking-wide">
@@ -154,7 +154,7 @@ export default function NotFound() {
         <Link href="/" className="group relative z-20">
           <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
           
-          <button className="relative flex items-center gap-3 bg-[#0a0a0a]/80 backdrop-blur-md border border-gray-700 hover:border-gray-300 text-gray-400 hover:text-white px-8 py-4 font-sans text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.9)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+          <button className="relative flex items-center gap-3 bg-card/80 backdrop-blur-md border border-border hover:border-gray-300 text-muted-foreground hover:text-foreground px-8 py-4 font-sans text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.9)] hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             <Flashlight className="w-5 h-5 text-yellow-500/50 group-hover:text-yellow-200 transition-colors" />
             Return to Hawkins
           </button>

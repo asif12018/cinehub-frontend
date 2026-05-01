@@ -50,11 +50,11 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="py-24 bg-[#0a0a0a]">
+    <section id="pricing" className="py-24 bg-card">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Choose Your Plan</h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Get unlimited access to premium movies and exclusive TV shows. Select the perfect plan for your entertainment needs.
           </p>
         </div>
@@ -63,8 +63,8 @@ export function Pricing() {
           {plans.map((plan, idx) => (
             <div
               key={plan.name}
-              className={`relative bg-[#141414] rounded-2xl p-8 border ${
-                plan.popular ? "border-red-600 shadow-2xl shadow-red-600/20 transform md:-translate-y-4" : "border-gray-800"
+              className={`relative bg-background rounded-2xl p-8 border ${
+                plan.popular ? "border-red-600 shadow-2xl shadow-red-600/20 transform md:-translate-y-4" : "border-border"
               }`}
             >
               {plan.popular && (
@@ -75,7 +75,7 @@ export function Pricing() {
 
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-400 text-sm h-10">{plan.description}</p>
+                <p className="text-muted-foreground text-sm h-10">{plan.description}</p>
               </div>
 
               <div className="mb-8 flex items-baseline gap-2">
@@ -85,7 +85,7 @@ export function Pricing() {
 
               <ul className="space-y-4 mb-8 flex-1">
                 {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-3 text-gray-300 text-sm">
+                  <li key={i} className="flex items-start gap-3 text-foreground text-sm">
                     <Check className="w-5 h-5 text-red-500 shrink-0" />
                     <span>{feature}</span>
                   </li>
@@ -96,7 +96,7 @@ export function Pricing() {
                 className={`w-full py-6 text-base font-bold ${
                   plan.popular
                     ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-gray-800 hover:bg-gray-700 text-white"
+                    : "bg-muted hover:bg-gray-700 text-white"
                 }`}
               >
                 {plan.buttonText}

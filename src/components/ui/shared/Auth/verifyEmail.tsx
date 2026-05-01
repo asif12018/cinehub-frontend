@@ -115,7 +115,7 @@ export default function OtpVerifyForm({ email }: OtpVerifyFormProps) {
             value={digit}
             onChange={(e) => handleInput(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            className="w-11 h-13 text-center text-xl font-medium border border-white/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-white bg-white/10 backdrop-blur-sm"
+            className="w-11 h-13 text-center text-xl font-medium border border-white/30 rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-foreground bg-white/10 backdrop-blur-sm"
           />
         ))}
       </div>
@@ -150,8 +150,8 @@ export default function OtpVerifyForm({ email }: OtpVerifyFormProps) {
         <div
           className={`w-full rounded-md px-4 py-3 text-sm text-center font-semibold ${
             message.ok
-              ? "bg-[#1a8a3c] border border-green-400/40 text-white"
-              : "bg-[#e87c03] border border-orange-400/40 text-white"
+              ? "bg-[#1a8a3c] border border-green-400/40 text-foreground"
+              : "bg-[#e87c03] border border-orange-400/40 text-foreground"
           }`}
         >
           {message.text}

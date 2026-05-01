@@ -114,11 +114,11 @@ export const ResetPasswordForm = () => {
   });
 
   return (
-    <Card className="font-sans w-full max-w-[450px] mx-auto bg-black/75 sm:bg-black/80 text-white border-0 shadow-none px-4 py-8 sm:p-12 sm:pb-16 rounded-md">
+    <Card className="font-sans w-full max-w-[450px] mx-auto bg-black/75 sm:bg-black/80 text-foreground border-0 shadow-none px-4 py-8 sm:p-12 sm:pb-16 rounded-md">
       <CardHeader className="text-left px-0 pt-0">
         <CardTitle className="text-[32px] font-semibold mb-2">Create New Password</CardTitle>
         <p className="text-[16px] text-[#737373] mb-6">
-          Enter the 6-digit code sent to <span className="text-white font-medium">{emailFromUrl || "your email"}</span> and choose a new password.
+          Enter the 6-digit code sent to <span className="text-foreground font-medium">{emailFromUrl || "your email"}</span> and choose a new password.
         </p>
       </CardHeader>
 
@@ -132,7 +132,7 @@ export const ResetPasswordForm = () => {
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-4 [&_label]:sr-only [&_input]:bg-[#333] [&_input]:text-white [&_input]:border-none [&_input]:h-[48px] [&_input]:rounded-[4px] [&_input]:px-5 focus-visible:[&_input]:ring-0 focus:[&_input]:border-b-2 focus:[&_input]:border-[#e87c03]"
+          className="space-y-4 [&_label]:sr-only [&_input]:bg-[#333] [&_input]:text-foreground [&_input]:border-none [&_input]:h-[48px] [&_input]:rounded-[4px] [&_input]:px-5 focus-visible:[&_input]:ring-0 focus:[&_input]:border-b-2 focus:[&_input]:border-[#e87c03]"
         >
           <form.Field name="otp">
             {(field) => (
@@ -160,7 +160,7 @@ export const ResetPasswordForm = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     variant="ghost"
                     size="icon"
-                    className="text-gray-400 hover:text-white hover:bg-transparent"
+                    className="text-muted-foreground hover:text-foreground hover:bg-transparent"
                   >
                     {showPassword ? (
                       <EyeOff className="size-5" aria-hidden="true" />
@@ -174,13 +174,13 @@ export const ResetPasswordForm = () => {
           </form.Field>
 
           {serverError && (
-            <Alert variant="destructive" className="bg-[#e87c03] border-none text-white font-medium p-4 mt-4">
+            <Alert variant="destructive" className="bg-[#e87c03] border-none text-foreground font-medium p-4 mt-4">
               <AlertDescription>{serverError}</AlertDescription>
             </Alert>
           )}
 
           {successMessage && (
-            <Alert className="bg-[#2b9049] border-none text-white font-medium p-4 mt-4">
+            <Alert className="bg-[#2b9049] border-none text-foreground font-medium p-4 mt-4">
               <AlertDescription>{successMessage}</AlertDescription>
             </Alert>
           )}
@@ -189,7 +189,7 @@ export const ResetPasswordForm = () => {
             <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
               {([canSubmit, isSubmitting]) => (
                 <AppSubmitButton
-                  className="w-full bg-[#E50914] hover:bg-[#C11119] text-white h-[48px] font-bold text-[16px] rounded-[4px]"
+                  className="w-full bg-[#E50914] hover:bg-[#C11119] text-foreground h-[48px] font-bold text-[16px] rounded-[4px]"
                   isPending={isSubmitting || isPending}
                   pendingLabel="Resetting..."
                   disabled={!canSubmit || isResending}
@@ -210,7 +210,7 @@ export const ResetPasswordForm = () => {
             onClick={handleResendOtp}
             // 🚨 Disable button if currently sending OR if timer > 0
             disabled={isResending || countdown > 0} 
-            className="text-white font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center disabled:hover:no-underline"
+            className="text-foreground font-medium hover:underline disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center disabled:hover:no-underline"
           >
             {isResending ? (
               <>
@@ -228,7 +228,7 @@ export const ResetPasswordForm = () => {
 
         <p className="text-[16px] text-[#737373]">
           Remember your password?{" "}
-          <Link href="/login" className="text-white font-medium hover:underline">
+          <Link href="/login" className="text-foreground font-medium hover:underline">
             Sign In
           </Link>
         </p>

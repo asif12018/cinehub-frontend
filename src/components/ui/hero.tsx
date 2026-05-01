@@ -24,7 +24,7 @@ export function Hero() {
           <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl leading-tight">
             CineTube
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-lg leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-200 mb-12 max-w-lg leading-relaxed">
             Watch movies and TV shows online. Stream anywhere, anytime.
           </p>
 

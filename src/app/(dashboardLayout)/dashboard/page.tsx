@@ -26,17 +26,17 @@ export default async function DashboardOverViewPage() {
 
   return (
     // 🟢 FORCING THE DARK THEME AND FONT HERE TO FIX THE LEAK
-    <div className="bg-[#0a0a0a] min-h-screen w-full text-white font-sans p-4 md:p-8">
+    <div className="bg-card min-h-screen w-full text-foreground font-sans p-4 md:p-8">
       
       {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Overview</h1>
-          <p className="text-gray-400 mt-1">Platform analytics and content management.</p>
+          <h1 className="text-3xl font-bold text-foreground">Admin Overview</h1>
+          <p className="text-muted-foreground mt-1">Platform analytics and content management.</p>
         </div>
         <Link 
           href="/dashboard/addMovies"
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg"
+          className="bg-red-600 hover:bg-red-700 text-foreground px-6 py-2.5 rounded-lg font-semibold transition-all flex items-center gap-2 shadow-lg"
         >
           <Film className="w-4 h-4" /> Add New Media
         </Link>
@@ -45,12 +45,12 @@ export default async function DashboardOverViewPage() {
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-[#141414] border border-gray-800 p-6 rounded-2xl hover:border-gray-700 transition-all shadow-md">
+          <div key={stat.label} className="bg-background border border-border p-6 rounded-2xl hover:border-border transition-all shadow-md">
             <div className="flex items-center justify-between mb-4">
               <stat.icon className={`w-8 h-8 ${stat.color}`} />
-              <span className="text-3xl font-bold text-white">{stat.value}</span>
+              <span className="text-3xl font-bold text-foreground">{stat.value}</span>
             </div>
-            <p className="text-gray-400 font-medium">{stat.label}</p>
+            <p className="text-muted-foreground font-medium">{stat.label}</p>
           </div>
         ))}
       </div>
@@ -58,12 +58,12 @@ export default async function DashboardOverViewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* CHART SECTION */}
-        <div className="lg:col-span-2 bg-[#141414] border border-gray-800 rounded-2xl p-6 shadow-md">
+        <div className="lg:col-span-2 bg-background border border-border rounded-2xl p-6 shadow-md">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold flex items-center gap-2 text-white">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-foreground">
               <TrendingUp className="w-5 h-5 text-red-500" /> Weekly Engagement
             </h2>
-            <span className="text-xs font-semibold px-3 py-1 bg-gray-800 rounded-full text-gray-300">Last 7 Days</span>
+            <span className="text-xs font-semibold px-3 py-1 bg-muted rounded-full text-foreground">Last 7 Days</span>
           </div>
           
           <div className="h-64 flex items-end justify-between gap-2 md:gap-4 pt-4">
@@ -88,16 +88,16 @@ export default async function DashboardOverViewPage() {
         </div>
 
         {/* PENDING REVIEWS WIDGET */}
-        <div className="bg-[#141414] border border-gray-800 rounded-2xl p-6 shadow-md flex flex-col">
-           <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
+        <div className="bg-background border border-border rounded-2xl p-6 shadow-md flex flex-col">
+           <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground">
              <AlertCircle className="w-5 h-5 text-yellow-500" /> Pending Approvals
            </h2>
            
            <div className="flex-1 overflow-y-auto pr-2 space-y-4">
              {recentReviews.length > 0 ? (
                recentReviews.slice(0, 5).map((review: any) => (
-                 <div key={review.id} className="bg-[#0a0a0a] border border-gray-800 p-4 rounded-xl hover:border-gray-700 transition-colors">
-                    <p className="text-sm font-bold text-gray-200 line-clamp-1">"{review.media?.title || "Unknown Title"}"</p>
+                 <div key={review.id} className="bg-card border border-border p-4 rounded-xl hover:border-border transition-colors">
+                    <p className="text-sm font-bold text-foreground line-clamp-1">"{review.media?.title || "Unknown Title"}"</p>
                     <div className="flex items-center justify-between mt-2">
                       <p className="text-xs text-gray-500">By {review.user?.name || "Anonymous"}</p>
                       <span className="flex items-center text-xs text-yellow-500 font-bold bg-yellow-500/10 px-2 py-1 rounded">
@@ -109,7 +109,7 @@ export default async function DashboardOverViewPage() {
              ) : (
                <div className="h-full flex flex-col items-center justify-center text-center py-10">
                  <Star className="w-10 h-10 text-gray-700 mb-3" />
-                 <p className="text-sm text-gray-400">No pending reviews.</p>
+                 <p className="text-sm text-muted-foreground">No pending reviews.</p>
                </div>
              )}
            </div>

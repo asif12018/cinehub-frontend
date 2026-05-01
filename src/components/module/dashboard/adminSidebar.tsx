@@ -48,16 +48,16 @@ export function AdminSidebar({ closeMobile }: { closeMobile?: () => void }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#141414] border-r border-gray-800 w-64 shrink-0">
+    <div className="flex flex-col h-full bg-background border-r border-border w-64 shrink-0">
       {/* Header */}
-      <div className="p-6 border-b border-gray-800 flex justify-between items-center">
+      <div className="p-6 border-b border-border flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
-          CineTube <span className="text-sm text-gray-400 tracking-widest uppercase block mt-1">Admin</span>
+          CineTube <span className="text-sm text-muted-foreground tracking-widest uppercase block mt-1">Admin</span>
         </Link>
         {/* Mobile Close Button */}
         {closeMobile && (
           <button className="md:hidden" onClick={closeMobile}>
-            <X className="w-6 h-6 text-gray-400 hover:text-white" />
+            <X className="w-6 h-6 text-muted-foreground hover:text-foreground" />
           </button>
         )}
       </div>
@@ -79,7 +79,7 @@ export function AdminSidebar({ closeMobile }: { closeMobile?: () => void }) {
               className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all ${
                 isActive
                   ? "bg-red-600/10 text-red-500 border border-red-600/20"
-                  : "text-gray-400 hover:bg-white/5 hover:text-gray-100"
+                  : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground"
               }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? "text-red-500" : "text-gray-500"}`} />
@@ -90,10 +90,10 @@ export function AdminSidebar({ closeMobile }: { closeMobile?: () => void }) {
       </nav>
 
       {/* Footer Actions */}
-      <div className="p-4 border-t border-gray-800 space-y-2">
+      <div className="p-4 border-t border-border space-y-2">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-white/5 hover:text-gray-100 transition-all font-medium"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-black/5 dark:hover:bg-white/5 hover:text-foreground transition-all font-medium"
         >
           <Home className="w-5 h-5 text-gray-500" />
           Back to Portal

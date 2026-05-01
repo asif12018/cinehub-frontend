@@ -151,7 +151,7 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
     if (review.status === "PENDING") {
       return "border-yellow-500/30 bg-yellow-500/5 hover:bg-yellow-500/10";
     }
-    return "border-white/10 bg-white/5 hover:bg-white/10";
+    return "border-white/10 bg-black/5 dark:bg-white/5 hover:bg-white/10";
   };
 
   return (
@@ -160,9 +160,9 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
       {/* 🟢 HEADER: User info and Rating */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <UserCircle className="w-10 h-10 text-gray-400" />
+          <UserCircle className="w-10 h-10 text-muted-foreground" />
           <div>
-            <p className="font-semibold text-gray-200 flex items-center gap-2">
+            <p className="font-semibold text-foreground flex items-center gap-2">
               {review.user?.name || "CineTube User"}
               
               {/* DYNAMIC STATUS BADGE */}
@@ -216,7 +216,7 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
           {review.isOwner && review.status !== "PUBLISHED" && !isEditing && (
             <button 
               onClick={() => setIsEditing(true)}
-              className="text-gray-400 hover:text-white transition-colors p-1"
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
               title="Edit Review"
             >
               <Edit2 className="w-4 h-4" />
@@ -241,7 +241,7 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
             <textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="w-full bg-black/40 border border-gray-600 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-red-500 min-h-[100px]"
+              className="w-full bg-black/5 dark:bg-black/40 border border-gray-600 rounded-lg p-3 text-sm text-foreground focus:outline-none focus:border-red-500 min-h-[100px]"
               disabled={isUpdating}
             />
             <div className="flex justify-end gap-2">
@@ -251,14 +251,14 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
                   setEditContent(review.content); 
                 }}
                 disabled={isUpdating}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-400 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-3.5 h-3.5" /> Cancel
               </button>
               <button 
                 onClick={handleSaveEdit}
                 disabled={isUpdating || !editContent.trim()}
-                className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-xs font-medium transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-foreground px-4 py-1.5 rounded-md text-xs font-medium transition-colors disabled:opacity-50"
               >
                 {isUpdating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
                 Save Changes
@@ -270,16 +270,16 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
           <>
             {review.tags?.some((t: any) => t.tag.name === "Spoiler Alert") && !revealSpoiler ? (
               <div 
-                className="bg-black/30 border border-red-500/20 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-black/40 transition-colors"
+                className="bg-black/30 border border-red-500/20 p-4 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-black/5 dark:bg-black/40 transition-colors"
                 onClick={() => setRevealSpoiler(true)}
               >
                 <div className="text-red-500 font-bold mb-2 flex items-center gap-2">
                   <AlertTriangle className="w-5 h-5" /> Spoiler Warning
                 </div>
-                <p className="text-gray-400 text-sm">This review contains spoilers. Click to reveal.</p>
+                <p className="text-muted-foreground text-sm">This review contains spoilers. Click to reveal.</p>
               </div>
             ) : (
-              <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+              <p className="text-foreground leading-relaxed text-sm md:text-base">
                 {review.content}
               </p>
             )}
@@ -298,12 +298,12 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
 
       {/* 🟢 FOOTER: Actions - ONLY SHOWN IF REVIEW IS PUBLISHED */}
       {review.status === "PUBLISHED" && (
-        <div className="flex items-center gap-6 border-t border-gray-700/50 pt-4">
+        <div className="flex items-center gap-6 border-t border-border/50 pt-4">
           <button 
             onClick={handleToggleLike}
             disabled={isLikeLoading}
             className={`flex items-center gap-2 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-              isLiked ? "text-blue-400" : "text-gray-400 hover:text-gray-200"
+              isLiked ? "text-blue-400" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             <ThumbsUp className={`w-4 h-4 transition-all ${isLiked ? "fill-current scale-110" : ""}`} /> 
@@ -312,7 +312,7 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
           
           <button 
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-gray-200 transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             <MessageSquare className="w-4 h-4" /> 
             {review.comments?.length || 0} Comments
@@ -322,18 +322,18 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
 
       {/* 🟢 COMMENTS SECTION - ONLY SHOWN IF PUBLISHED */}
       {review.status === "PUBLISHED" && showComments && (
-        <div className="mt-6 space-y-4 pl-4 md:pl-6 border-l-2 border-gray-700/50 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="mt-6 space-y-4 pl-4 md:pl-6 border-l-2 border-border/50 animate-in fade-in slide-in-from-top-4 duration-300">
           
           {/* List Existing Comments */}
           {review.comments && review.comments.length > 0 ? (
             review.comments.map((comment: any) => (
-              <div key={comment.id} className="bg-black/20 rounded-lg p-4 border border-white/5 group">
+              <div key={comment.id} className="bg-black/5 dark:bg-black/20 rounded-lg p-4 border border-white/5 group">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-[10px] font-bold text-gray-300">
+                    <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-[10px] font-bold text-foreground">
                       {comment.user?.name?.charAt(0) || "U"}
                     </div>
-                    <p className="text-sm font-medium text-gray-300">{comment.user?.name || "User"}</p>
+                    <p className="text-sm font-medium text-foreground">{comment.user?.name || "User"}</p>
                     <span className="text-[10px] text-gray-500">•</span>
                     <span className="text-[10px] text-gray-500">
                       {new Date(comment.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -343,14 +343,14 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
                   {/* Reply Button */}
                   <button 
                     onClick={() => handleReplyClick(comment.user?.name || "User")}
-                    className="text-xs text-gray-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                    className="text-xs text-gray-500 hover:text-foreground transition-colors opacity-0 group-hover:opacity-100"
                   >
                     Reply
                   </button>
                 </div>
                 
                 {/* Highlight mentions in blue */}
-                <p className="text-sm text-gray-400 pl-8">
+                <p className="text-sm text-muted-foreground pl-8">
                   {comment.content.split(' ').map((word: string, i: number) => 
                     word.startsWith('@') ? (
                       <span key={i} className="text-blue-400 font-medium">{word} </span>
@@ -374,12 +374,12 @@ function ReviewCard({ review, isAdmin }: { review: any; isAdmin?: boolean }) {
               onChange={(e) => setCommentText(e.target.value)}
               placeholder="Write a comment or reply..."
               disabled={isCommenting}
-              className="flex-1 bg-black/40 border border-gray-700 rounded-md px-4 py-2 text-sm text-white focus:outline-none focus:border-red-500 transition-colors disabled:opacity-50"
+              className="flex-1 bg-black/5 dark:bg-black/40 border border-border rounded-md px-4 py-2 text-sm text-foreground focus:outline-none focus:border-red-500 transition-colors disabled:opacity-50"
             />
             <button 
               type="submit"
               disabled={isCommenting || !commentText.trim()}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-red-600 hover:bg-red-700 text-foreground px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isCommenting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Post"}
             </button>
@@ -458,12 +458,12 @@ export default function ReviewElement({ movieId, isAdmin }: { movieId: string; i
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-16 px-4 md:px-12 pb-24">
-      <h2 className="text-3xl font-bold text-white mb-8 border-b border-gray-800 pb-4">
+      <h2 className="text-3xl font-bold text-foreground mb-8 border-b border-border pb-4">
         Audience Reviews <span className="text-gray-500 text-lg font-normal">({reviews.length})</span>
       </h2>
       
       {reviews.length === 0 ? (
-        <div className="text-center py-12 bg-white/5 backdrop-blur-sm rounded-xl border border-white/5 text-gray-400">
+        <div className="text-center py-12 bg-black/5 dark:bg-white/5 backdrop-blur-sm rounded-xl border border-white/5 text-muted-foreground">
           No reviews yet. Be the first to share your thoughts!
         </div>
       ) : (

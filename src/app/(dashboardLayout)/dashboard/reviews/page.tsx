@@ -123,28 +123,28 @@ export default function ManageReviewsPage() {
   const modalConfig = getModalConfig();
 
   return (
-    <div className="min-h-screen w-full flex-1 bg-[#0a0a0a] p-4 md:p-8 font-sans text-white">
+    <div className="min-h-screen w-full flex-1 bg-card p-4 md:p-8 font-sans text-foreground">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight flex items-center gap-3">
               <MessageSquare className="w-8 h-8 text-yellow-500" />
               Manage Reviews
             </h1>
-            <p className="text-gray-400 mt-2">Manage pending and published user reviews.</p>
+            <p className="text-muted-foreground mt-2">Manage pending and published user reviews.</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-gray-800 pb-2">
+        <div className="flex gap-4 border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
             className={`flex items-center gap-2 px-4 py-2 font-semibold text-sm transition-colors border-b-2 ${
               activeTab === "pending" 
                 ? "border-yellow-500 text-yellow-500" 
-                : "border-transparent text-gray-400 hover:text-gray-200"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             <MessageSquareWarning className="w-4 h-4" />
@@ -155,7 +155,7 @@ export default function ManageReviewsPage() {
             className={`flex items-center gap-2 px-4 py-2 font-semibold text-sm transition-colors border-b-2 ${
               activeTab === "published" 
                 ? "border-green-500 text-green-500" 
-                : "border-transparent text-gray-400 hover:text-gray-200"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             <CheckSquare className="w-4 h-4" />
@@ -164,10 +164,10 @@ export default function ManageReviewsPage() {
         </div>
 
         {/* Content Section */}
-        <div className="bg-[#141414] border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-background border border-border rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-[#1a1a1a] text-xs uppercase font-semibold text-gray-400 border-b border-gray-800">
+            <table className="w-full text-left text-sm text-foreground">
+              <thead className="bg-[#1a1a1a] text-xs uppercase font-semibold text-muted-foreground border-b border-border">
                 <tr>
                   <th className="px-6 py-4">User</th>
                   <th className="px-6 py-4">Review Content</th>
@@ -196,14 +196,14 @@ export default function ManageReviewsPage() {
                 ) : (
                   reviews.map((review: any) => (
                     <tr key={review.id} className="hover:bg-white/5 transition-colors group">
-                      <td className="px-6 py-4 font-medium text-white">
+                      <td className="px-6 py-4 font-medium text-foreground">
                         <div className="flex flex-col">
                           <span>{review.user?.name || "Unknown User"}</span>
                           <span className="text-xs text-gray-500">{review.user?.email}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 max-w-md">
-                        <p className="truncate text-gray-300" title={review.content}>
+                        <p className="truncate text-foreground" title={review.content}>
                           {review.content || "No text provided"}
                         </p>
                       </td>

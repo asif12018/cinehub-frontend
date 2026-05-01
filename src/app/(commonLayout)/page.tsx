@@ -11,6 +11,8 @@ import { Pricing } from "@/components/ui/pricing";
 import { getMedia } from "@/service/media.service";
 import { useQuery } from "@tanstack/react-query";
 import { Search as SearchIcon } from "lucide-react";
+import { AiMovieRecommendation } from "@/components/ui/ai-movie-recommendation";
+import { AiMovieRow } from "@/components/ui/ai-movie-row";
 
 // 🟢 2. Renamed your original Home component to HomeContent
 function HomeContent() {
@@ -26,7 +28,7 @@ function HomeContent() {
   const isSearching = !!searchQuery;
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground font-sans overflow-x-hidden">
       
       {/* We only show the intro if the user isn't actively searching for something */}
       {!isSearching && <SplashIntro />}
@@ -38,13 +40,18 @@ function HomeContent() {
       {/* MAIN CONTENT AREA */}
       <main className={isSearching ? "pt-32 px-4 md:px-12 min-h-[75vh]" : "pb-20"}>
         
+        {/* 🔥 AI RECOMMENDATION WIDGET ADDED HERE SO IT'S VISIBLE ON HOME PAGE 🔥 */}
+        <div className="pt-8 px-4 md:px-12">
+          <AiMovieRecommendation />
+        </div>
+
         {isLoading ? (
           /* SKELETON LOADER */
           <div className={isSearching ? "" : "pt-12 px-4 md:px-12"}>
-             <div className="w-48 h-8 bg-gray-800/60 rounded-md animate-pulse mb-6" />
+             <div className="w-48 h-8 bg-muted/60 rounded-md animate-pulse mb-6" />
              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
                {[...Array(6)].map((_, i) => (
-                 <div key={i} className="aspect-[2/3] bg-gray-800/40 rounded-md animate-pulse shadow-xl" />
+                 <div key={i} className="aspect-[2/3] bg-muted/40 rounded-md animate-pulse shadow-xl" />
                ))}
              </div>
           </div>
@@ -52,8 +59,8 @@ function HomeContent() {
           
           /* SEARCH RESULTS VIEW (Grid Layout) */
           <section className="animate-in fade-in duration-500">
-            <h1 className="text-2xl md:text-3xl font-medium text-gray-400 mb-8 tracking-wide">
-              Explore titles related to: <span className="text-white font-bold">"{searchQuery}"</span>
+            <h1 className="text-2xl md:text-3xl font-medium text-muted-foreground mb-8 tracking-wide">
+              Explore titles related to: <span className="text-foreground font-bold">"{searchQuery}"</span>
             </h1>
             
             {moviesList.length > 0 ? (
@@ -68,7 +75,7 @@ function HomeContent() {
               <div className="flex flex-col items-center justify-center py-32 text-center">
                 <SearchIcon className="w-16 h-16 text-gray-600 mb-4" />
                 <h3 className="text-2xl font-semibold mb-2">No matches found</h3>
-                <p className="text-gray-400 max-w-md">
+                <p className="text-muted-foreground max-w-md">
                   We couldn't find any movies or series matching "{searchQuery}". Try adjusting your search criteria.
                 </p>
               </div>
@@ -80,6 +87,8 @@ function HomeContent() {
           /* DEFAULT CATEGORY ROWS (Clean Spacing, No Overlap) */
           <div className="flex flex-col gap-8 md:gap-12 mt-8 md:mt-12 animate-in fade-in duration-700">
             
+            <AiMovieRow movies={moviesList} />
+
             <MovieRow 
               title="Trending Now" 
               movies={[...moviesList].sort((a: any, b: any) => (b.views || b.likes || 0) - (a.views || a.likes || 0)).slice(0, 5)} 
@@ -116,8 +125,8 @@ export default function Home() {
   return (
     // Shows a cool red spinner matching your theme while Next.js figures out the URL parameters
     <Suspense fallback={
-      <div className="min-h-screen bg-[#141414] text-white flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-muted border-t-primary rounded-full animate-spin" />
       </div>
     }>
       <HomeContent />

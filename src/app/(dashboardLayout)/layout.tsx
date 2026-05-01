@@ -12,15 +12,15 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#0a0a0a]">
+    <div className="flex flex-col md:flex-row min-h-screen bg-card">
       {/* Mobile Topbar */}
-      <div className="md:hidden flex items-center justify-between p-4 border-b border-gray-800 bg-[#141414] sticky top-0 z-30">
+      <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-background sticky top-0 z-30">
         <span className="font-bold text-xl bg-gradient-to-r from-red-600 to-red-400 bg-clip-text text-transparent">
           CineTube Admin
         </span>
         <button 
           onClick={() => setIsSidebarOpen(true)} 
-          className="p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-white transition-colors"
+          className="p-2 bg-muted hover:bg-gray-700 rounded-lg text-foreground transition-colors"
         >
           <Menu className="w-6 h-6" />
         </button>

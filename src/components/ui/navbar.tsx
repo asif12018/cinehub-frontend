@@ -24,6 +24,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { getUserInfo, logoutUserAction } from "@/service/auth.service";
 import { getMedia } from "@/service/media.service";
 import { getSubscriptionInfo } from "@/service/payment.service";
@@ -190,7 +191,7 @@ export function Navbar() {
               type="submit"
               className="absolute left-4 top-1/2 transform -translate-y-1/2"
             >
-              <Search className="text-gray-400 w-5 h-5 group-hover:text-red-500 transition-colors cursor-pointer" />
+              <Search className="text-muted-foreground w-5 h-5 group-hover:text-red-500 transition-colors cursor-pointer" />
             </button>
             <input
               type="text"
@@ -201,7 +202,7 @@ export function Navbar() {
               }}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Search movies..."
-              className="w-full pl-12 pr-10 py-2 bg-[#141414]/80 backdrop-blur-sm border border-gray-700/50 rounded-full text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500"
+              className="w-full pl-12 pr-10 py-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-full text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500"
             />
             {isSearching && (
               <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-red-600" />
@@ -209,7 +210,7 @@ export function Navbar() {
           </form>
 
           {showSuggestions && searchTerm.trim().length > 1 && (
-            <div className="absolute top-full mt-2 w-full bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden max-h-[400px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
+            <div className="absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-2xl overflow-hidden max-h-[400px] overflow-y-auto animate-in fade-in slide-in-from-top-2">
               {suggestions.length > 0
                 ? suggestions.map((movie: any) => (
                     <Link
@@ -219,7 +220,7 @@ export function Navbar() {
                         setShowSuggestions(false);
                         setSearchTerm("");
                       }}
-                      className="flex items-center gap-3 p-3 hover:bg-white/10 transition-colors border-b border-gray-800/50 last:border-0"
+                      className="flex items-center gap-3 p-3 hover:bg-white/10 transition-colors border-b border-border/50 last:border-0"
                     >
                       <div className="relative w-12 h-16 shrink-0 bg-gray-900 rounded">
                         <Image
@@ -233,14 +234,14 @@ export function Navbar() {
                         <span className="text-white font-medium text-sm line-clamp-1">
                           {movie.title}
                         </span>
-                        <span className="text-gray-400 text-xs mt-0.5">
+                        <span className="text-muted-foreground text-xs mt-0.5">
                           {movie.releaseYear} • {movie.type}
                         </span>
                       </div>
                     </Link>
                   ))
                 : !isSearching && (
-                    <div className="p-4 text-gray-400 text-sm text-center">
+                    <div className="p-4 text-muted-foreground text-sm text-center">
                       No movies found.
                     </div>
                   )}
@@ -257,7 +258,7 @@ export function Navbar() {
           {user?.role === "USER" && (
             <Link
               href="/movie"
-              className="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="hidden sm:block text-sm font-medium text-white hover:text-white transition-colors"
             >
               Movie
             </Link>
@@ -266,15 +267,19 @@ export function Navbar() {
           {isAdmin && (
             <Link
               href="/dashboard"
-              className="hidden sm:block text-sm font-medium text-gray-300 hover:text-white transition-colors"
+              className="hidden sm:block text-sm font-medium text-white hover:text-white transition-colors"
             >
               Dashboard
             </Link>
           )}
 
+          <div className="flex items-center justify-center">
+            <ThemeToggle />
+          </div>
+
           {/* Conditional Auth UI */}
           {isLoadingUser || (user && isLoadingSub) ? (
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-gray-700 border-t-red-600 animate-spin" />
+            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-border border-t-red-600 animate-spin" />
           ) : user ? (
             <div className="flex items-center gap-3 md:gap-4">
               {/* 🟢 BADGE LOGIC: Admin > Subscribed > Unsubscribed */}
@@ -306,7 +311,7 @@ export function Navbar() {
                     setIsNotificationOpen(!isNotificationOpen);
                     setIsProfileOpen(false);
                   }}
-                  className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-gray-300 hover:text-white"
+                  className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-white hover:text-white"
                 >
                   <Bell className="w-5 h-5 md:w-6 md:h-6" />
                   {unreadCount > 0 && (
@@ -316,9 +321,9 @@ export function Navbar() {
 
                 {/* Notifications Dropdown */}
                 {isNotificationOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-80 bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
-                    <div className="px-4 py-3 border-b border-gray-800 bg-white/5 flex justify-between items-center">
-                      <p className="text-sm font-medium text-white">
+                  <div className="absolute right-0 top-full mt-3 w-80 bg-background border border-border rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
+                    <div className="px-4 py-3 border-b border-border bg-white/5 flex justify-between items-center">
+                      <p className="text-sm font-medium text-foreground">
                         Notifications
                       </p>
                       {unreadCount > 0 && (
@@ -349,16 +354,16 @@ export function Navbar() {
                                 }
                               }
                             }}
-                            className={`p-4 border-b border-gray-800/50 last:border-0 hover:bg-white/10 transition-colors ${notif.link ? "cursor-pointer" : ""} ${notif.isRead ? "opacity-70" : "bg-red-500/5"}`}
+                            className={`p-4 border-b border-border/50 last:border-0 hover:bg-white/10 transition-colors ${notif.link ? "cursor-pointer" : ""} ${notif.isRead ? "opacity-70" : "bg-red-500/5"}`}
                           >
                             <div className="flex gap-3">
                               <div className="flex-1 min-w-0">
                                 <p
-                                  className={`text-sm ${notif.isRead ? "text-gray-300" : "text-white font-medium"}`}
+                                  className={`text-sm ${notif.isRead ? "text-muted-foreground" : "text-foreground font-medium"}`}
                                 >
                                   {notif.title}
                                 </p>
-                                <p className="text-xs text-gray-400 mt-1 line-clamp-2">
+                                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                   {notif.body}
                                   <br />
                                   <span className="text-red-500">
@@ -403,7 +408,7 @@ export function Navbar() {
                       ? "border-red-500 bg-red-500/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
                       : isSubscribed
                         ? "border-yellow-500 bg-yellow-500/10 hover:shadow-[0_0_15px_rgba(234,179,8,0.3)]"
-                        : "bg-gray-800 border-gray-700 hover:border-red-500 hover:bg-red-600/20"
+                        : "bg-muted border-border hover:border-red-500 hover:bg-red-600/20"
                   }`}
                 >
                   {user.image ? (
@@ -415,19 +420,19 @@ export function Navbar() {
                     />
                   ) : (
                     <User
-                      className={`w-5 h-5 md:w-6 md:h-6 ${isAdmin ? "text-red-500" : isSubscribed ? "text-yellow-500" : "text-gray-300"}`}
+                      className={`w-5 h-5 md:w-6 md:h-6 ${isAdmin ? "text-red-500" : isSubscribed ? "text-yellow-500" : "text-white"}`}
                     />
                   )}
                 </div>
 
                 {/* Dropdown Menu */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-56 bg-[#141414] border border-gray-800 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
-                    <div className="px-4 py-3 border-b border-gray-800 bg-white/5">
-                      <p className="text-sm font-medium text-white truncate">
+                  <div className="absolute right-0 top-full mt-3 w-56 bg-background border border-border rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col z-50">
+                    <div className="px-4 py-3 border-b border-border bg-white/5">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {user.name || "CineTube User"}
                       </p>
-                      <p className="text-xs text-gray-400 truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {user.email}
                       </p>
                     </div>
@@ -436,25 +441,25 @@ export function Navbar() {
                       {/* <Link
                         href="/watchList"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <ListVideo className="w-4 h-4 text-gray-400" />
+                        <ListVideo className="w-4 h-4 text-muted-foreground" />
                         Watchlist
                       </Link> */}
                       {
                         !isAdmin ? ( <Link
                         href="/watchList"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <ListVideo className="w-4 h-4 text-gray-400" />
+                        <ListVideo className="w-4 h-4 text-muted-foreground" />
                         Watchlist
                       </Link>):( <Link
                         href="/movies"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <ListVideo className="w-4 h-4 text-gray-400" />
+                        <ListVideo className="w-4 h-4 text-muted-foreground" />
                         movies
                       </Link>)
                       }
@@ -465,52 +470,52 @@ export function Navbar() {
                           <Link
                             href="/payment-history"
                             onClick={() => setIsProfileOpen(false)}
-                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                            className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                           >
-                            <ShoppingBag className="w-4 h-4 text-gray-400" />
+                            <ShoppingBag className="w-4 h-4 text-muted-foreground" />
                             Purchase History
                           </Link>
 
                           <Link
                             href="/pricing"
                             onClick={() => setIsProfileOpen(false)}
-                            className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                            className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                           >
-                            <CreditCard className="w-4 h-4 text-gray-400" />
+                            <CreditCard className="w-4 h-4 text-muted-foreground" />
                             Manage Subscription
                           </Link>
                         </>
                       )}
                     </div>
 
-                    <div className="p-2 border-t border-gray-800 flex flex-col gap-1">
+                    <div className="p-2 border-t border-border flex flex-col gap-1">
                       <Link
                         href="/faq"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <HelpCircle className="w-4 h-4 text-gray-400" />
+                        <HelpCircle className="w-4 h-4 text-muted-foreground" />
                         FAQ
                       </Link>
                       <Link
                         href="/about"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <Info className="w-4 h-4 text-gray-400" />
+                        <Info className="w-4 h-4 text-muted-foreground" />
                         About us
                       </Link>
                       <Link
                         href="/contact"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-foreground hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-colors"
                       >
-                        <Mail className="w-4 h-4 text-gray-400" />
+                        <Mail className="w-4 h-4 text-muted-foreground" />
                         Contact us
                       </Link>
                     </div>
 
-                    <div className="p-2 border-t border-gray-800">
+                    <div className="p-2 border-t border-border">
                       <button
                         onClick={() => handleLogout()}
                         className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-md transition-colors"
@@ -527,7 +532,7 @@ export function Navbar() {
             <div className="flex items-center gap-3 md:gap-4">
               <Link
                 href="/login"
-                className="text-sm font-medium text-gray-300 hover:text-white transition-colors hidden sm:block"
+                className="text-sm font-medium text-white hover:text-white transition-colors hidden sm:block"
               >
                 Sign In
               </Link>

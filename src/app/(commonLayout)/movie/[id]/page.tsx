@@ -23,6 +23,9 @@ const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false 
 }) as typeof ReactPlayerType;
 
+import { AiFunFact } from "@/components/ui/ai-fun-fact";
+import { AiContentWarning } from "@/components/ui/ai-content-warning";
+
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) { 
   const { id } = use(params); 
 
@@ -199,17 +202,17 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   // Prevent UI flickering while fetching statuses
   if (isLoading || isSubscribtionLoading || isPurchaseLoading || isWatchListCheckLoading || isUserInfoResponseLoading) {
     return (
-      <div className="min-h-screen bg-[#141414] text-white flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-gray-800 border-t-red-600 rounded-full animate-spin" />
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-border border-t-red-600 rounded-full animate-spin" />
       </div>
     );
   }
 
   if (isError || !movie) {
     return (
-      <div className="min-h-screen bg-[#141414] text-white flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center">
         <Navbar />
-        <h1 className="text-3xl font-bold mb-2 text-gray-300">Movie Not Found</h1>
+        <h1 className="text-3xl font-bold mb-2 text-foreground">Movie Not Found</h1>
         <p className="text-gray-500">We couldn't locate this title. It may have been removed.</p>
       </div>
     );
@@ -219,7 +222,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const genreList = movie.genres?.map((g: any) => g.genre?.name).filter(Boolean).join(", ") || "Unknown";
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans selection:bg-red-600 selection:text-white pb-12">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-red-600 selection:text-white pb-12">
       <Navbar />
 
       <div className="relative w-full h-[85vh] md:h-[90vh] overflow-hidden mb-12">
@@ -229,29 +232,34 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
           style={{ backgroundImage: `url(${movie.backdropUrl || movie.posterUrl})` }} 
         />
 
-        <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/80 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
 
         <div className="absolute bottom-0 left-0 w-full px-4 md:px-12 pb-16 pt-32 max-w-4xl z-10 animate-in fade-in slide-in-from-bottom-10 duration-1000">
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 drop-shadow-2xl text-white">
             {movie.title}
           </h1>
 
-          <div className="flex items-center gap-4 text-sm md:text-base font-semibold text-gray-300 mb-6 drop-shadow-md">
+          <div className="flex items-center gap-4 text-sm md:text-base font-semibold text-gray-200 mb-6 drop-shadow-md">
             {movie.avgRating && (
                <span className="text-green-500">{Math.round(movie.avgRating * 20)}% Match</span>
             )}
             <span>{movie.releaseYear}</span>
-            <span className="border border-gray-500 px-1.5 rounded-sm text-xs text-gray-400">
+            <span className="border border-gray-400 px-1.5 rounded-sm text-xs text-gray-300">
               {movie.pricingTier}
             </span>
             <span>HD</span>
           </div>
 
-          <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl drop-shadow-lg leading-snug">
+          <p className="text-gray-100 text-lg md:text-xl leading-relaxed mb-8 max-w-3xl drop-shadow">
             {movie.synopsis}
           </p>
+
+          {/* EXTRA AI FEATURES */}
+          <AiFunFact movieTitle={movie.title} />
+          <AiContentWarning movieTitle={movie.title} synopsis={movie.synopsis} />
+          <div className="mb-8" />
 
           <div className="flex flex-wrap items-center gap-4 mb-10">
             
@@ -276,7 +284,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 <button 
                   onClick={() => handleCheckout("RENTAL")}
                   disabled={isRedirecting}
-                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 bg-muted text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CreditCard className="w-5 h-5" />}
                   Rent 48hr ({rentPrice})
@@ -285,7 +293,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 <button 
                   onClick={() => handleCheckout("ONE_TIME_BUY")}
                   disabled={isRedirecting}
-                  className="flex items-center gap-2 bg-gray-800 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 bg-muted text-white px-6 py-2.5 md:px-8 md:py-3 rounded-md font-bold text-lg hover:bg-gray-700 transition-colors border border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isRedirecting ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShoppingCart className="w-5 h-5" />}
                   Buy ({buyPrice})
@@ -317,15 +325,15 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             )}
           </div>
 
-          <div className="text-sm md:text-base text-gray-400 max-w-2xl leading-relaxed">
+          <div className="text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed">
             <p className="mb-2">
-              <span className="text-gray-500">Cast:</span> <span className="text-gray-300">{castList}</span>
+              <span className="text-gray-400">Cast:</span> <span className="text-gray-100">{castList}</span>
             </p>
             <p className="mb-2">
-              <span className="text-gray-500">Director:</span> <span className="text-gray-300">{movie.director}</span>
+              <span className="text-gray-400">Director:</span> <span className="text-gray-100">{movie.director}</span>
             </p>
             <p>
-              <span className="text-gray-500">Genres:</span> <span className="text-gray-300">{genreList}</span>
+              <span className="text-gray-400">Genres:</span> <span className="text-gray-100">{genreList}</span>
             </p>
           </div>
         </div>
@@ -336,14 +344,14 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         {isUserLoggedIn ? (
           <>
             {isUserCreatedReview ? (
-              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-8 md:p-10 mb-8 flex flex-col items-center justify-center text-center transition-all hover:bg-white/10">
+              <div className="bg-black/5 dark:bg-white/5 backdrop-blur-md border border-border rounded-xl p-8 md:p-10 mb-8 flex flex-col items-center justify-center text-center transition-all hover:bg-black/10 dark:hover:bg-white/10">
                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4 border border-green-500/20 shadow-inner">
                   <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-xl font-bold text-foreground mb-2">
                   You've already reviewed this movie!
                 </h3>
-                <p className="text-gray-400 text-sm md:text-base max-w-md mx-auto">
+                <p className="text-muted-foreground text-sm md:text-base max-w-md mx-auto">
                   Thank you for sharing your thoughts. You can find your rating and comments in the audience reviews section below.
                 </p>
               </div>
@@ -354,16 +362,16 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             <ReviewElement movieId={movie?.id || id} isAdmin={isAdmin} />
           </>
         ) : (
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-8 md:p-12 text-center flex flex-col items-center justify-center transition-all hover:bg-white/10 mt-8 mb-24">
-            <div className="w-16 h-16 bg-black/40 rounded-full flex items-center justify-center mb-6 border border-gray-700">
-              <Lock className="w-8 h-8 text-gray-400" />
+          <div className="bg-black/5 dark:bg-white/5 backdrop-blur-md border border-border rounded-xl p-8 md:p-12 text-center flex flex-col items-center justify-center transition-all hover:bg-black/10 dark:hover:bg-white/10 mt-8 mb-24">
+            <div className="w-16 h-16 bg-black/5 dark:bg-black/40 rounded-full flex items-center justify-center mb-6 border border-border">
+              <Lock className="w-8 h-8 text-muted-foreground" />
             </div>
             
-            <h3 className="text-2xl font-bold text-white mb-2">
+            <h3 className="text-2xl font-bold text-foreground mb-2">
               Authentication Required
             </h3>
             
-            <p className="text-gray-400 max-w-md mx-auto mb-8 leading-relaxed">
+            <p className="text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
               To read reviews or share your own thoughts about this movie, please log in to your CineTube account.
             </p>
 
@@ -384,7 +392,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       {/* UNIVERSAL VIDEO MODAL */}
       {playingUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
+          <div className="relative w-full max-w-5xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-border">
             
             <button 
               onClick={handleCloseModal}

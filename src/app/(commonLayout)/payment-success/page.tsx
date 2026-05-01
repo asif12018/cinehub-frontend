@@ -25,7 +25,7 @@ export default function PaymentSuccess() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#141414] flex flex-col items-center justify-center p-4 md:p-12 relative overflow-hidden selection:bg-red-600/30">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 md:p-12 relative overflow-hidden selection:bg-red-600/30">
       
       {/* 🟢 CUSTOM CSS FOR THE NETFLIX ZOOM ANIMATION */}
       <style>{`
@@ -54,7 +54,7 @@ export default function PaymentSuccess() {
       </div>
 
       {/* LAYER 2: DARK GRADIENT OVERLAYS */}
-      <div className="absolute inset-0 bg-[#141414]/85 z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-background/85 z-10 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none z-10" />
 
       {/* 🟢 LAYER 3: THE PURE CSS NETFLIX ANIMATION */}
@@ -84,13 +84,13 @@ export default function PaymentSuccess() {
         <div className="relative mb-8 animate-[bounce_1s_ease-in-out]">
           <div className="absolute inset-0 bg-red-600/20 rounded-full blur-xl animate-pulse" />
           <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(220,38,38,0.5)] border border-red-500/30 relative z-10">
-            <Check className="w-10 h-10 md:w-12 md:h-12 text-white drop-shadow-lg" strokeWidth={3} />
+            <Check className="w-10 h-10 md:w-12 md:h-12 text-foreground drop-shadow-lg" strokeWidth={3} />
           </div>
         </div>
 
         {/* Text Area */}
         <div className="space-y-4">
-          <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight drop-shadow-md">
+          <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight drop-shadow-md">
             Payment Successful
           </h1>
           
@@ -99,8 +99,8 @@ export default function PaymentSuccess() {
              CineTube PRO
           </div>
 
-          <p className="text-gray-300 text-lg md:text-xl font-light !mt-6">
-            Welcome to the ultimate movie experience. Your <span className="text-white font-medium">CineTube PRO</span> subscription is now active.
+          <p className="text-foreground text-lg md:text-xl font-light !mt-6">
+            Welcome to the ultimate movie experience. Your <span className="text-foreground font-medium">CineTube PRO</span> subscription is now active.
           </p>
         </div>
 
@@ -114,9 +114,9 @@ export default function PaymentSuccess() {
           </Link>
           
           <Link href="/dashboard" className="w-full sm:w-auto">
-            <button className="w-full flex items-center justify-center gap-2 bg-[#2b2b2b] hover:bg-[#3d3d3d] text-white border border-gray-700 hover:border-gray-500 px-8 py-3.5 rounded-md font-semibold text-lg transition-all active:scale-95">
+            <button className="w-full flex items-center justify-center gap-2 bg-[#2b2b2b] hover:bg-[#3d3d3d] text-foreground border border-border hover:border-gray-500 px-8 py-3.5 rounded-md font-semibold text-lg transition-all active:scale-95">
               Manage Account
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </button>
           </Link>
         </div>

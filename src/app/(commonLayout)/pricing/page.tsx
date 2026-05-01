@@ -102,14 +102,14 @@ export default function PricingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-card flex items-center justify-center">
         <Loader2 className="w-10 h-10 text-red-600 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white pt-24 pb-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-card text-foreground pt-24 pb-12 px-4 relative overflow-hidden">
       
       {/* Background Glow Effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[400px] bg-red-600/10 blur-[120px] rounded-full pointer-events-none" />
@@ -121,17 +121,17 @@ export default function PricingPage() {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-10">
               <Crown className="w-16 h-16 text-yellow-500 mx-auto mb-4 drop-shadow-[0_0_15px_rgba(234,179,8,0.4)]" />
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">Welcome to PRO</h1>
-              <p className="text-gray-400 text-lg">Thank you for being a premium member of CineTube.</p>
+              <h1 className="text-foregroundxl md:text-5xl font-bold mb-4 font-serif">Welcome to PRO</h1>
+              <p className="text-muted-foreground text-lg">Thank you for being a premium member of CineTube.</p>
             </div>
 
-            <div className="bg-[#141414] border border-yellow-500/30 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(234,179,8,0.1)] max-w-2xl mx-auto">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-800 pb-8 mb-8">
+            <div className="bg-background border border-yellow-500/30 rounded-2xl p-8 md:p-10 shadow-[0_0_40px_rgba(234,179,8,0.1)] max-w-2xl mx-auto">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-border pb-8 mb-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-2">
+                  <h2 className="text-2xl font-bold text-foreground flex items-center gap-2 mb-2">
                     CineTube <span className="text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded text-sm uppercase tracking-wider border border-yellow-500/20">Pro Plan</span>
                   </h2>
-                  <p className="text-gray-400">Unlimited streaming. No ads. 4K HDR.</p>
+                  <p className="text-muted-foreground">Unlimited streaming. No ads. 4K HDR.</p>
                 </div>
                 
                 {/* 🟢 DYNAMIC BADGE BASED ON CANCELLATION STATUS */}
@@ -164,8 +164,8 @@ export default function PricingPage() {
                     Cancel Subscription
                   </button>
                 ) : (
-                  <div className="text-center p-4 bg-gray-900/50 rounded-lg border border-gray-800">
-                    <p className="text-sm text-gray-400">
+                  <div className="text-center p-4 bg-gray-900/50 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground">
                       Your subscription is scheduled to be canceled. You will retain access until the end of your billing cycle 
                       {periodEndDate ? ` (${new Date(periodEndDate).toLocaleDateString()})` : ""}.
                     </p>
@@ -179,10 +179,10 @@ export default function PricingPage() {
           /* 🟢 STATE 2: USER IS NOT SUBSCRIBED (SALES PAGE) */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 font-serif tracking-tight">
+              <h1 className="text-foregroundxl md:text-6xl font-bold mb-6 font-serif tracking-tight">
                 Choose the plan that's <br className="hidden md:block"/> right for you
               </h1>
-              <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
                 Unlock endless entertainment. Watch all you want, ad-free. Recommendations just for you. Change or cancel your plan anytime.
               </p>
             </div>
@@ -190,10 +190,10 @@ export default function PricingPage() {
             <div className="flex flex-col lg:flex-row gap-8 justify-center items-stretch max-w-5xl mx-auto">
               
               {/* Basic Plan (Free/Guest) */}
-              <div className="flex-1 bg-[#141414] border border-gray-800 rounded-2xl p-8 opacity-70 hover:opacity-100 transition-opacity flex flex-col">
-                <h3 className="text-xl font-medium text-gray-300 mb-2">Guest Pass</h3>
+              <div className="flex-1 bg-background border border-border rounded-2xl p-8 opacity-70 hover:opacity-100 transition-opacity flex flex-col">
+                <h3 className="text-xl font-medium text-foreground mb-2">Guest Pass</h3>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-bold text-white">Free</span>
+                  <span className="text-foregroundxl font-bold text-foreground">Free</span>
                 </div>
                 
                 <div className="space-y-4 mb-8 flex-1">
@@ -206,7 +206,7 @@ export default function PricingPage() {
 
                 <button 
                   disabled
-                  className="w-full bg-gray-800 text-gray-400 font-medium py-3.5 rounded-lg cursor-not-allowed"
+                  className="w-full bg-muted text-muted-foreground font-medium py-3.5 rounded-lg cursor-not-allowed"
                 >
                   Current Plan
                 </button>
@@ -220,10 +220,10 @@ export default function PricingPage() {
                 
                 <h3 className="text-xl font-medium text-red-500 mb-2">Premium Monthly Subscription</h3>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-bold text-white">$75.00</span>
-                  <span className="text-gray-400 font-medium">/month</span>
+                  <span className="text-foregroundxl font-bold text-foreground">$75.00</span>
+                  <span className="text-muted-foreground font-medium">/month</span>
                 </div>
-                <p className="text-sm text-gray-400 mb-6 border-b border-gray-800 pb-6">Cancel anytime. No hidden fees.</p>
+                <p className="text-sm text-muted-foreground mb-6 border-b border-border pb-6">Cancel anytime. No hidden fees.</p>
                 
                 <div className="space-y-4 mb-8 flex-1">
                   <FeatureItem text="Everything in Guest" included={true} highlight={false} />
@@ -257,14 +257,14 @@ export default function PricingPage() {
       {/* 🟢 CUSTOM CANCEL MODAL */}
       {isCancelModalOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#141414] border border-gray-800 rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="bg-background border border-border rounded-2xl max-w-md w-full p-6 md:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
             
             <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-6 mx-auto">
               <AlertCircle className="w-6 h-6 text-red-500" />
             </div>
             
-            <h3 className="text-2xl font-bold text-white text-center mb-2">Cancel Subscription?</h3>
-            <p className="text-gray-400 text-center mb-8">
+            <h3 className="text-2xl font-bold text-foreground text-center mb-2">Cancel Subscription?</h3>
+            <p className="text-muted-foreground text-center mb-8">
               Are you sure you want to cancel? You will still have full access to CineTube Pro until the end of your current billing period.
             </p>
             
@@ -280,7 +280,7 @@ export default function PricingPage() {
               <button 
                 onClick={executeCancel}
                 disabled={isCanceling}
-                className="w-full bg-transparent border border-gray-700 text-gray-400 font-medium py-3.5 rounded-lg hover:text-white hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-transparent border border-border text-muted-foreground font-medium py-3.5 rounded-lg hover:text-foreground hover:bg-muted transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isCanceling && <Loader2 className="w-4 h-4 animate-spin" />}
                 Yes, Cancel Subscription
@@ -299,14 +299,14 @@ function FeatureItem({ text, included, highlight = false }: { text: string; incl
     <div className={`flex items-center gap-3 ${!included ? "opacity-50" : ""}`}>
       {included ? (
         <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${highlight ? "bg-red-600" : "bg-gray-700"}`}>
-          <Check className="w-3 h-3 text-white stroke-[3]" />
+          <Check className="w-3 h-3 text-foreground stroke-[3]" />
         </div>
       ) : (
-        <div className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-gray-800">
+        <div className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-muted">
           <X className="w-3 h-3 text-gray-500 stroke-[3]" />
         </div>
       )}
-      <span className={`text-sm md:text-base ${highlight ? "text-white font-medium" : "text-gray-300"}`}>
+      <span className={`text-sm md:text-base ${highlight ? "text-foreground font-medium" : "text-foreground"}`}>
         {text}
       </span>
     </div>

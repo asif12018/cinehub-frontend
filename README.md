@@ -151,7 +151,7 @@ cinehub-frontend/
 
    ```bash
    git clone https://github.com/asif12018/cinetube-frontend.git
-   cd cinehub-frontend
+   cd cinetube-frontend
    ```
 
 2. **Install dependencies**

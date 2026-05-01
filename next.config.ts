@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: 'https://cinehub-backend-z65f.onrender.com/api/v1/:path*',
+      },
+    ]
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",

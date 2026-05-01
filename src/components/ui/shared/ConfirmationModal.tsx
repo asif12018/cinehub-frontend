@@ -54,20 +54,20 @@ export function ConfirmationModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-[#141414] border border-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6 text-center">
+      <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 text-center">
         <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border ${styles.iconContainer}`}>
           {styles.icon}
         </div>
         
         <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-        <div className="text-gray-400 mb-8">{message}</div>
+        <div className="text-muted-foreground mb-8">{message}</div>
         
         <div className="flex gap-3">
           <button 
             type="button" 
             onClick={onClose}
             disabled={isPending}
-            className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-bold tracking-wide transition-all"
+            className="flex-1 bg-muted hover:bg-gray-700 text-white py-3 rounded-lg font-bold tracking-wide transition-all"
           >
             {cancelText}
           </button>

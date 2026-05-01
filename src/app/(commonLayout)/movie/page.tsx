@@ -6,6 +6,7 @@ import { MovieCard } from "@/components/ui/movie-card";
 import { getMedia, getMediaAllGenre } from "@/service/media.service";
 import { useQuery } from "@tanstack/react-query";
 import { Search as SearchIcon, X, ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
+import { AiMovieRecommendation } from "@/components/ui/ai-movie-recommendation";
 
 export default function MediaPage() {
   const initialState = {
@@ -68,26 +69,29 @@ export default function MediaPage() {
     : [];
 
   // Reusable sleek styling for dropdowns
-  const selectStyle = "appearance-none bg-[#141414] border border-gray-700/50 hover:border-gray-500 rounded-full py-2.5 px-5 text-sm outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all cursor-pointer shadow-lg";
+  const selectStyle = "appearance-none bg-background border border-border/50 hover:border-gray-500 rounded-full py-2.5 px-5 text-sm outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all cursor-pointer shadow-lg";
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white font-sans flex flex-col">
+    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col">
     
 
       <main className="pt-28 px-4 md:px-12 pb-16 flex-grow max-w-[2000px] mx-auto w-full">
         
         {/* HEADER SECTION */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Movies & Series</h1>
+          <h1 className="text-3xl md:text-foregroundxl font-bold tracking-tight">Movies & Series</h1>
           
           {/* Mobile Filter Toggle */}
           <button 
-            className="md:hidden flex items-center gap-2 bg-gray-800 py-2 px-4 rounded-md w-fit"
+            className="md:hidden flex items-center gap-2 bg-muted py-2 px-4 rounded-md w-fit"
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="w-4 h-4" /> Filters
           </button>
         </div>
+
+        {/* AI RECOMMENDATION WIDGET */}
+        <AiMovieRecommendation />
 
         {/* FILTER BAR - Netflix Style */}
         <div className={`mb-12 transition-all ${showFilters ? "block" : "hidden md:block"}`}>
@@ -95,11 +99,11 @@ export default function MediaPage() {
             
             {/* Search - Primary Focus */}
             <div className="relative flex-grow min-w-[250px] md:max-w-md">
-              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search titles, actors, directors..."
-                className="w-full bg-[#2b2b2b]/50 border border-transparent hover:bg-[#2b2b2b] hover:border-gray-600 rounded-full py-3 pl-12 pr-4 text-sm focus:bg-[#141414] focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-gray-400"
+                className="w-full bg-[#2b2b2b]/50 border border-transparent hover:bg-[#2b2b2b] hover:border-gray-600 rounded-full py-3 pl-12 pr-4 text-sm focus:bg-background focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-muted-foreground"
                 value={filters.searchTerm}
                 onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
               />
@@ -163,7 +167,7 @@ export default function MediaPage() {
             {Object.values(filters).some(val => val !== "" && val !== 1 && val !== 12) && (
                <button 
                  onClick={() => setFilters(initialState)} 
-                 className="flex items-center justify-center gap-1.5 text-gray-400 hover:text-white hover:bg-gray-800 transition-colors rounded-full py-2.5 px-4 text-sm font-medium ml-auto"
+                 className="flex items-center justify-center gap-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors rounded-full py-2.5 px-4 text-sm font-medium ml-auto"
                >
                  <X className="w-4 h-4" /> Clear All
                </button>
@@ -175,7 +179,7 @@ export default function MediaPage() {
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-12">
              {[...Array(12)].map((_, i) => (
-               <div key={i} className="aspect-[2/3] bg-gray-800/40 rounded-md animate-pulse shadow-xl" />
+               <div key={i} className="aspect-[2/3] bg-muted/40 rounded-md animate-pulse shadow-xl" />
              ))}
           </div>
         ) : moviesList.length > 0 ? (
@@ -190,7 +194,7 @@ export default function MediaPage() {
           <div className="flex flex-col items-center justify-center py-32 text-center">
             <SearchIcon className="w-16 h-16 text-gray-600 mb-4" />
             <h3 className="text-2xl font-semibold mb-2">No matches found</h3>
-            <p className="text-gray-400 max-w-md">We couldn't find anything matching your filters. Try adjusting your search or clearing the filters.</p>
+            <p className="text-muted-foreground max-w-md">We couldn't find anything matching your filters. Try adjusting your search or clearing the filters.</p>
           </div>
         )}
 

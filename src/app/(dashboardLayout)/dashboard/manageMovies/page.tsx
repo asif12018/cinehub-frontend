@@ -38,14 +38,14 @@ export default function ManageMoviesPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex-1 bg-[#0a0a0a] p-4 md:p-8 font-sans text-white">
+    <div className="min-h-screen w-full flex-1 bg-card p-4 md:p-8 font-sans text-foreground">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-6">
           <div>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Manage Movies</h1>
-            <p className="text-gray-400 mt-2">View, edit, or delete media from the platform.</p>
+            <p className="text-muted-foreground mt-2">View, edit, or delete media from the platform.</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -55,12 +55,12 @@ export default function ManageMoviesPage() {
                 placeholder="Search movies..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-[#1a1a1a] border border-gray-700 rounded-lg py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all w-full md:w-64"
+                className="bg-[#1a1a1a] border border-border rounded-lg py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all w-full md:w-64"
               />
             </div>
             <Link 
               href="/dashboard/addMovies"
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2.5 px-4 rounded-lg font-bold text-sm tracking-wide shadow-lg transition-all"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-foreground py-2.5 px-4 rounded-lg font-bold text-sm tracking-wide shadow-lg transition-all"
             >
               <Plus className="w-4 h-4" /> Add Movie
             </Link>
@@ -68,10 +68,10 @@ export default function ManageMoviesPage() {
         </div>
 
         {/* Content Section */}
-        <div className="bg-[#141414] border border-gray-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-background border border-border rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left text-sm text-gray-300">
-              <thead className="bg-[#1a1a1a] text-xs uppercase font-semibold text-gray-400 border-b border-gray-800">
+            <table className="w-full text-left text-sm text-foreground">
+              <thead className="bg-[#1a1a1a] text-xs uppercase font-semibold text-muted-foreground border-b border-border">
                 <tr>
                   <th className="px-6 py-4">Media</th>
                   <th className="px-6 py-4">Type</th>
@@ -101,8 +101,8 @@ export default function ManageMoviesPage() {
                 ) : (
                   moviesList.map((movie: any) => (
                     <tr key={movie.id} className="hover:bg-white/5 transition-colors group">
-                      <td className="px-6 py-4 font-medium text-white flex items-center gap-4">
-                        <div className="w-10 h-14 bg-gray-800 rounded overflow-hidden flex-shrink-0 relative">
+                      <td className="px-6 py-4 font-medium text-foreground flex items-center gap-4">
+                        <div className="w-10 h-14 bg-muted rounded overflow-hidden flex-shrink-0 relative">
                           {movie.poster ? (
                             <Image src={movie.poster} alt={movie.title} fill className="object-cover" />
                           ) : (
@@ -123,9 +123,9 @@ export default function ManageMoviesPage() {
                           {movie.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-400">{movie.releaseYear}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{movie.releaseYear}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${movie.pricingTier === 'FREE' ? 'bg-gray-700 text-gray-300' : 'bg-amber-600/20 text-amber-400'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-semibold ${movie.pricingTier === 'FREE' ? 'bg-gray-700 text-foreground' : 'bg-amber-600/20 text-amber-400'}`}>
                           {movie.pricingTier}
                         </span>
                       </td>
@@ -133,7 +133,7 @@ export default function ManageMoviesPage() {
                         <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Link 
                             href={`/dashboard/manageMovies/${movie.id}`}
-                            className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />

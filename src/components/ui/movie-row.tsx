@@ -13,7 +13,7 @@ export function MovieRow({ title, movies }: MovieRowProps) {
 
   return (
     <section className="py-6 md:py-8 pl-4 md:pl-12 overflow-hidden">
-      <h2 className="text-xl md:text-2xl font-bold text-white mb-4 md:ml-3 ml-2">
+      <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 md:ml-3 ml-2">
         {title}
       </h2>
       {/* We rely on MovieCard's built-in mx-2/mx-3 for spacing, so no gap needed here */}

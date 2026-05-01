@@ -34,13 +34,13 @@ export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-[#141414] text-white pt-24 pb-20 px-4 md:px-12 max-w-4xl mx-auto">
+    <div className="min-h-screen bg-background text-foreground pt-24 pb-20 px-4 md:px-12 max-w-4xl mx-auto">
       <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="inline-flex items-center justify-center p-4 bg-red-600/10 rounded-full mb-6">
           <MessageCircleQuestion className="w-12 h-12 text-red-500" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Frequently Asked Questions</h1>
-        <p className="text-gray-400 text-lg">Everything you need to know about the CineHub platform and billing.</p>
+        <p className="text-muted-foreground text-lg">Everything you need to know about the Cinetube platform and billing.</p>
       </div>
 
       <div className="space-y-4">
@@ -58,7 +58,7 @@ export default function FAQPage() {
                 onClick={() => setOpenIndex(isOpen ? null : index)}
               >
                 <span className="text-left font-medium text-lg text-gray-200">{faq.question}</span>
-                <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-red-500" : ""}`} />
+                <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180 text-red-500" : ""}`} />
               </button>
               
               <div 
@@ -66,7 +66,7 @@ export default function FAQPage() {
                   isOpen ? "max-h-40 pb-6 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="text-gray-400 leading-relaxed border-t border-white/10 pt-4">
+                <p className="text-muted-foreground leading-relaxed border-t border-white/10 pt-4">
                   {faq.answer}
                 </p>
               </div>
@@ -77,7 +77,7 @@ export default function FAQPage() {
 
       <div className="mt-16 text-center bg-gradient-to-br from-red-900/20 to-black border border-red-900/30 p-8 rounded-3xl">
         <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
-        <p className="text-gray-400 mb-6">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+        <p className="text-muted-foreground mb-6">Can't find the answer you're looking for? Please chat to our friendly team.</p>
         <a href="/contact" className="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transition-colors">
           Get in Touch
         </a>
