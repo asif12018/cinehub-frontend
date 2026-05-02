@@ -35,7 +35,7 @@ function HomeContent() {
 
       
       
-      {!isSearching && <Hero />}
+      {!isSearching && <Hero movies={moviesList} />}
       
       {/* MAIN CONTENT AREA */}
       <main className={isSearching ? "pt-32 px-4 md:px-12 min-h-[75vh]" : "pb-20"}>
