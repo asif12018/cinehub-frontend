@@ -87,7 +87,7 @@ function ScrollableRow({
   onMount,
 }: {
   movies: any[];
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
   onScroll: () => void;
   onMount: () => void;
 }) {
