@@ -7,12 +7,12 @@ export async function sendEmailAction(formData: FormData) {
   const subject = formData.get("subject") as string;
   const message = formData.get("message") as string;
 
-  // Ideally, service and template IDs should be in .env as well.
-  const serviceId = process.env.EMAILJS_SERVICE_ID || "service_placeholder";
-  const templateId = process.env.EMAILJS_TEMPLATE_ID || "template_placeholder";
+  // Use the newly provided .env variables for EmailJS
+  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_placeholder";
+  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_placeholder";
   
-  // The user provided EMAILJS_PRIVATE_KEY in .env, which in EmailJS is usually the Public Key used for REST API
-  const publicKey = process.env.EMAILJS_PRIVATE_KEY; 
+  // The user provided NEXT_PUBLIC_EMAILJS_PUBLIC_KEY in .env
+  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY; 
 
   if (!publicKey) {
     return { success: false, error: "Email configuration is missing." };
