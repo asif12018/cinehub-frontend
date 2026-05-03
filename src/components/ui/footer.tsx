@@ -164,7 +164,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/privacy"
                   className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center"
                 >
                   <span className="h-1 w-1 rounded-full bg-primary mr-2 opacity-0 -ml-3 transition-all"></span>
@@ -173,7 +173,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/terms"
                   className="text-muted-foreground hover:text-primary transition-colors text-sm flex items-center"
                 >
                   <span className="h-1 w-1 rounded-full bg-primary mr-2 opacity-0 -ml-3 transition-all"></span>
@@ -222,13 +222,13 @@ export function Footer() {
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link
-              href="#"
+              href="/privacy"
               className="hover:text-primary transition-colors"
             >
               Privacy
             </Link>
             <Link
-              href="#"
+              href="/terms"
               className="hover:text-primary transition-colors"
             >
               Terms
