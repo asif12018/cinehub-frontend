@@ -18,8 +18,11 @@
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
+- [Live Demo](#live-demo)
+- [Overview & Problem Statement](#overview--problem-statement)
+- [Screenshots](#screenshots)
 - [Features](#features)
+- [System Architecture & Scalability](#system-architecture--scalability)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Setup & Installation](#setup--installation)
@@ -31,15 +34,35 @@
 
 ---
 
-## Overview
+## 🔗 Live Demo
 
-**CineTube** is a modern movie discovery and streaming web application. Users can browse movies and series, write reviews, manage a personal watchlist, and subscribe to premium plans. Admins have a dedicated dashboard to manage content, actors, reviews, and monitor platform activity.
+**Check out the live application here:** [https://cinetube-frontend-eight.vercel.app/](https://cinetube-frontend-eight.vercel.app/)
+
+---
+
+## 📖 Overview & Problem Statement
+
+**The Problem:** Finding a comprehensive platform that combines seamless movie discovery, high-quality streaming, and engaging community interaction can be challenging. Users often face fragmented experiences and clunky UI across different apps.
+
+**The Solution:** **CineTube** is a modern, Netflix-inspired movie discovery and streaming web application designed to solve this. It provides a unified experience where users can discover new releases, browse curated movie rows, manage personal watchlists, and subscribe to premium tiers. Furthermore, it fosters a community by allowing users to rate and review content. Admins are provided with a powerful, secure dashboard to manage the platform's catalog, users, and review moderation.
+
+---
+
+## 📸 Screenshots
+
+![CineTube Home Screenshot](public/image.png)
 
 ---
 
 ## ✨ Features
 
-### 👤 User-Facing
+### 🌟 Unique / Standout Features
+- **Cinematic Session Intro:** A Netflix-style 8-second video splash screen shown once per session for an immersive initial experience.
+- **Spoiler-Aware Review System:** Users can flag their reviews as containing spoilers, protecting the community from unwanted plot reveals.
+- **Real-Time Notification Polling:** A dedicated notification panel that auto-fetches updates without manual refresh, complete with a "mark all as read" capability.
+- **Robust Admin Moderation Flow:** Custom confirmation modals for safely approving, unpublishing, or deleting user-generated content and reviews.
+
+### 👤 Core User Features
 - **Splash Intro** — Cinematic video intro on first visit (shown once per session, with an 8s fallback for slow connections)
 - **Hero Banner** — Dynamic, full-screen featured movie showcase on the home page
 - **Movie Discovery** — Curated rows: *Trending Now*, *Top Rated This Week*, *Newly Added*, *Editor's Picks*
@@ -58,6 +81,16 @@
 - Add / manage actors with profile images
 - Review moderation — approve, unpublish, or delete reviews via custom confirmation modals
 - User management
+
+---
+
+## 🏗️ System Architecture & Scalability
+
+- **Separation of Concerns:** Clean architecture separating the frontend (Next.js) from the backend REST API, allowing independent scaling and deployments.
+- **Optimized Performance:** Leverages Next.js App Router for Server-Side Rendering (SSR) and static optimization, ensuring fast load times and strong SEO.
+- **Efficient State Management:** TanStack React Query handles data caching, deduplication, and background synchronization, minimizing redundant network requests and server load.
+- **Robust Security & Auth:** Secure authentication flow using JWTs (Access and Refresh tokens) verified via robust server-side middleware. Sensitive environment variables are strictly separated.
+- **Scalable UI:** Modular, highly reusable component architecture using React and Tailwind CSS, ensuring a scalable and maintainable codebase as the platform grows.
 
 ---
 
