@@ -298,10 +298,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             <span>HD</span>
           </div>
 
-          <p className="text-gray-100 text-lg md:text-xl leading-relaxed mb-8 max-w-3xl drop-shadow">
-            {movie.synopsis}
-          </p>
-
           {/* EXTRA AI FEATURES */}
           <AiFunFact movieTitle={movie.title} />
           <AiContentWarning movieTitle={movie.title} synopsis={movie.synopsis} />
@@ -384,17 +380,66 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             
             {/* Trailer is always public — no auth needed */}
           </div>
+        </div>
+      </div>
 
-          <div className="text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed">
-            <p className="mb-2">
-              <span className="text-gray-400">Cast:</span> <span className="text-gray-100">{castList}</span>
+      {/* 🟢 OVERVIEW & KEY INFORMATION SECTION */}
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Overview Column */}
+          <div className="lg:col-span-2">
+            <h2 className="text-3xl font-bold text-foreground mb-6 border-b border-border pb-2">Overview</h2>
+            <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+              {movie.synopsis}
             </p>
-            <p className="mb-2">
-              <span className="text-gray-400">Director:</span> <span className="text-gray-100">{movie.director}</span>
-            </p>
-            <p>
-              <span className="text-gray-400">Genres:</span> <span className="text-gray-100">{genreList}</span>
-            </p>
+          </div>
+          
+          {/* Key Information Column */}
+          <div className="bg-muted/10 p-6 rounded-xl border border-border">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Key Information</h2>
+            <div className="space-y-4">
+              <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground uppercase font-semibold">Director</span>
+                <span className="text-foreground font-medium">{movie.director || "Unknown"}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground uppercase font-semibold">Cast</span>
+                <span className="text-foreground font-medium">{castList}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground uppercase font-semibold">Genres</span>
+                <span className="text-foreground font-medium">{genreList}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm text-muted-foreground uppercase font-semibold">Release Year</span>
+                <span className="text-foreground font-medium">{movie.releaseYear || "Unknown"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 🟢 MEDIA & GALLERY SECTION */}
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-12 mb-16">
+        <h2 className="text-2xl font-bold text-foreground mb-6">Media & Gallery</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {/* Video Placeholder */}
+          <div className="aspect-video bg-muted/20 rounded-xl border border-border flex items-center justify-center overflow-hidden relative group cursor-pointer" onClick={() => movie.trailerUrl && handleLaunchVideo(movie.trailerUrl)}>
+            {movie.backdropUrl ? (
+              <img src={movie.backdropUrl} alt="Backdrop" className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" />
+            ) : null}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="bg-red-600 w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Play className="w-6 h-6 text-white ml-1" />
+              </div>
+            </div>
+          </div>
+          {/* Image Placeholders */}
+          <div className="aspect-video bg-muted/20 rounded-xl border border-border flex items-center justify-center overflow-hidden">
+             {movie.posterUrl ? <img src={movie.posterUrl} alt="Poster" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /> : <span className="text-muted-foreground">Image 1</span>}
+          </div>
+          <div className="aspect-video bg-muted/20 rounded-xl border border-border flex items-center justify-center overflow-hidden hidden md:flex">
+             {movie.backdropUrl ? <img src={movie.backdropUrl} alt="Backdrop" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /> : <span className="text-muted-foreground">Image 2</span>}
           </div>
         </div>
       </div>

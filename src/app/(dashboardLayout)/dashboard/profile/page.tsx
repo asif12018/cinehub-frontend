@@ -20,6 +20,9 @@ export default function ProfilePage() {
     name: "",
     gender: "",
   });
+  const [errors, setErrors] = useState({
+    name: "",
+  });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -71,6 +74,18 @@ export default function ProfilePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) return;
+
+    let formValid = true;
+    const newErrors = { name: "" };
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Full name is required";
+      formValid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!formValid) return;
 
     const submitData = new FormData();
     submitData.append("name", formData.name);
@@ -143,17 +158,21 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Full Name</label>
+                <label className="text-sm font-medium text-foreground">Full Name <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-background border border-border rounded-lg py-2.5 pl-10 pr-4 focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+                    onChange={(e) => {
+                      setFormData({...formData, name: e.target.value});
+                      if (errors.name) setErrors({...errors, name: ""});
+                    }}
+                    className={`w-full bg-background border ${errors.name ? 'border-red-500' : 'border-border'} rounded-lg py-2.5 pl-10 pr-4 focus:ring-1 focus:ring-red-500 focus:border-red-500 outline-none transition-all`}
                     placeholder="Enter your name"
                   />
                 </div>
+                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
               </div>
 
               <div className="space-y-2">

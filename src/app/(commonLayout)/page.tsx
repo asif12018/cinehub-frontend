@@ -108,6 +108,71 @@ function HomeContent() {
               title="Editor’s Picks" 
               movies={moviesList.filter((m: any) => m.isEditorPick === true).slice(0, 5)} 
             />
+
+            {/* FEATURES SECTION */}
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-16">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Why Choose CineTube?</h2>
+                <p className="text-muted-foreground text-lg">Experience entertainment like never before.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-muted/20 p-8 rounded-2xl border border-border text-center hover:bg-muted/30 transition-colors">
+                  <div className="w-16 h-16 mx-auto bg-red-600/20 text-red-600 rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Unlimited Streaming</h3>
+                  <p className="text-muted-foreground">Watch as much as you want, ad-free. Discover new titles added every week.</p>
+                </div>
+                <div className="bg-muted/20 p-8 rounded-2xl border border-border text-center hover:bg-muted/30 transition-colors">
+                  <div className="w-16 h-16 mx-auto bg-red-600/20 text-red-600 rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Watch Everywhere</h3>
+                  <p className="text-muted-foreground">Stream on your smart TV, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players, and more.</p>
+                </div>
+                <div className="bg-muted/20 p-8 rounded-2xl border border-border text-center hover:bg-muted/30 transition-colors">
+                  <div className="w-16 h-16 mx-auto bg-red-600/20 text-red-600 rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  </div>
+                  <h3 className="text-xl font-bold mb-3">Download & Go</h3>
+                  <p className="text-muted-foreground">Save your favorites easily and always have something to watch offline.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* TESTIMONIALS SECTION */}
+            <div className="w-full bg-muted/10 py-16 border-y border-border">
+              <div className="max-w-7xl mx-auto px-4 md:px-12">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">What Our Users Say</h2>
+                  <p className="text-muted-foreground text-lg">Join thousands of happy streamers.</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-background p-8 rounded-2xl border border-border shadow-lg">
+                    <div className="flex text-red-500 mb-4">{"★★★★★"}</div>
+                    <p className="text-lg italic text-muted-foreground mb-6">"CineTube has completely changed my weekends. The AI recommendations are spot on and the streaming quality is flawless!"</p>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center font-bold text-lg">SJ</div>
+                      <div>
+                        <h4 className="font-bold text-foreground">Sarah Jenkins</h4>
+                        <p className="text-sm text-muted-foreground">Subscriber since 2025</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-background p-8 rounded-2xl border border-border shadow-lg">
+                    <div className="flex text-red-500 mb-4">{"★★★★★"}</div>
+                    <p className="text-lg italic text-muted-foreground mb-6">"The best platform for renting new releases. I love that I don't need a subscription if I just want to watch one movie."</p>
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center font-bold text-lg">MR</div>
+                      <div>
+                        <h4 className="font-bold text-foreground">Mark Robinson</h4>
+                        <p className="text-sm text-muted-foreground">Movie Enthusiast</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             
             {/* PRICING SECTION */}
             <Pricing />

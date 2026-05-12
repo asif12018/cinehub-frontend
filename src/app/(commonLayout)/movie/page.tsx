@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { MovieCard } from "@/components/ui/movie-card";
 import { getMedia, getMediaAllGenre } from "@/service/media.service";
@@ -22,6 +22,15 @@ export default function MediaPage() {
 
   const [filters, setFilters] = useState(initialState);
   const [showFilters, setShowFilters] = useState(false); // Mobile filter toggle
+  const [searchInput, setSearchInput] = useState("");
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleFilterChange("searchTerm", searchInput);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   // Fetch data based on dynamic filters
   const queryString = new URLSearchParams(
@@ -104,8 +113,8 @@ export default function MediaPage() {
                 type="text"
                 placeholder="Search titles, actors, directors..."
                 className="w-full bg-[#2b2b2b]/50 border border-transparent hover:bg-[#2b2b2b] hover:border-gray-600 rounded-full py-3 pl-12 pr-4 text-sm focus:bg-background focus:border-red-600 focus:ring-1 focus:ring-red-600 outline-none transition-all placeholder:text-muted-foreground"
-                value={filters.searchTerm}
-                onChange={(e) => handleFilterChange("searchTerm", e.target.value)}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </div>
 
