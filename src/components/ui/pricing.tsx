@@ -94,7 +94,7 @@ export function Pricing() {
 
               <Button
                 onClick={() => {
-                   window.location.href = '/login'; 
+                   window.location.href = '/pricing'; 
                 }}
                 className={`w-full py-6 text-base font-bold ${
                   plan.popular
