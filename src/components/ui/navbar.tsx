@@ -230,7 +230,7 @@ export function Navbar() {
               }}
               onFocus={() => setShowSuggestions(true)}
               placeholder="Search movies..."
-              className="w-full pl-12 pr-10 py-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-full text-white focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500"
+              className="w-full pl-12 pr-10 py-2 bg-background/80 backdrop-blur-sm border border-border/50 rounded-full text-foreground focus:outline-none focus:border-red-600 focus:ring-1 focus:ring-red-600 transition-all placeholder:text-gray-500"
             />
             {isSearching && (
               <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-red-600" />
@@ -248,9 +248,9 @@ export function Navbar() {
                         setShowSuggestions(false);
                         setSearchTerm("");
                       }}
-                      className="flex items-center gap-3 p-3 hover:bg-white/10 transition-colors border-b border-border/50 last:border-0"
+                      className="flex items-center gap-3 p-3 hover:bg-muted transition-colors border-b border-border/50 last:border-0"
                     >
-                      <div className="relative w-12 h-16 shrink-0 bg-gray-900 rounded">
+                      <div className="relative w-12 h-16 shrink-0 bg-muted rounded">
                         <Image
                           src={movie.posterUrl || "/placeholder.jpg"}
                           alt={movie.title}
@@ -259,7 +259,7 @@ export function Navbar() {
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-white font-medium text-sm line-clamp-1">
+                        <span className="text-foreground font-medium text-sm line-clamp-1">
                           {movie.title}
                         </span>
                         <span className="text-muted-foreground text-xs mt-0.5">
@@ -279,8 +279,8 @@ export function Navbar() {
 
         {/* User Options Section */}
         <div className="flex items-center space-x-4 md:space-x-6 shrink-0">
-          <button className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors">
-            <Search className="w-5 h-5 text-white" />
+          <button className="md:hidden p-2 hover:bg-muted rounded-full transition-colors">
+            <Search className="w-5 h-5 text-foreground" />
           </button>
 
           <div className="flex items-center justify-center">
@@ -321,7 +321,7 @@ export function Navbar() {
                     setIsNotificationOpen(!isNotificationOpen);
                     setIsProfileOpen(false);
                   }}
-                  className="relative p-2 rounded-full hover:bg-white/10 transition-colors text-white hover:text-white"
+                  className="relative p-2 rounded-full hover:bg-muted transition-colors text-foreground"
                 >
                   <Bell className="w-5 h-5 md:w-6 md:h-6" />
                   {unreadCount > 0 && (
@@ -430,7 +430,7 @@ export function Navbar() {
                     />
                   ) : (
                     <User
-                      className={`w-5 h-5 md:w-6 md:h-6 ${isAdmin ? "text-red-500" : isSubscribed ? "text-yellow-500" : "text-white"}`}
+                      className={`w-5 h-5 md:w-6 md:h-6 ${isAdmin ? "text-red-500" : isSubscribed ? "text-yellow-500" : "text-foreground"}`}
                     />
                   )}
                 </div>
@@ -550,7 +550,7 @@ export function Navbar() {
             <div className="flex items-center gap-3 md:gap-4">
               <Link
                 href="/login"
-                className="text-sm font-medium text-white hover:text-white transition-colors hidden sm:block"
+                className="text-sm font-medium text-foreground hover:text-foreground/80 transition-colors hidden sm:block"
               >
                 Sign In
               </Link>
