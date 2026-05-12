@@ -38,8 +38,16 @@ export function Navbar() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -123,9 +131,9 @@ export function Navbar() {
 
   // 3. Fetch Search Results
   const { data: searchResults, isLoading: isSearching } = useQuery<any>({
-    queryKey: ["search-media", searchTerm],
-    queryFn: () => getMedia(`searchTerm=${searchTerm}`),
-    enabled: searchTerm.trim().length > 1,
+    queryKey: ["search-media", debouncedSearchTerm],
+    queryFn: () => getMedia(`searchTerm=${debouncedSearchTerm}`),
+    enabled: debouncedSearchTerm.trim().length > 1,
   });
 
   const suggestions = searchResults?.data?.data || searchResults?.data || [];
