@@ -53,7 +53,7 @@ export function Pricing() {
     <section id="pricing" className="py-24 bg-card">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Choose Your Plan</h2>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground mb-4">Choose Your Plan</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Get unlimited access to premium movies and exclusive TV shows. Select the perfect plan for your entertainment needs.
           </p>
@@ -74,12 +74,12 @@ export function Pricing() {
               )}
 
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                <h3 className="text-xl font-bold text-foreground mb-2">{plan.name}</h3>
                 <p className="text-muted-foreground text-sm h-10">{plan.description}</p>
               </div>
 
               <div className="mb-8 flex items-baseline gap-2">
-                <span className="text-5xl font-extrabold text-white">${plan.price}</span>
+                <span className="text-5xl font-extrabold text-foreground">${plan.price}</span>
                 <span className="text-gray-500 font-medium">/{plan.interval}</span>
               </div>
 
@@ -99,7 +99,7 @@ export function Pricing() {
                 className={`w-full py-6 text-base font-bold ${
                   plan.popular
                     ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-muted hover:bg-gray-700 text-white"
+                    : "bg-muted hover:bg-muted/80 text-foreground"
                 }`}
               >
                 {plan.buttonText}
