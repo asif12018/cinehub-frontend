@@ -135,7 +135,7 @@ function HomeContent() {
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                   </div>
                   <h3 className="text-xl font-bold mb-3">Download & Go</h3>
-                  <p className="text-muted-foreground">Save your favorites easily and always have something to watch offline.</p>
+                  <p className="text-muted-foreground">Coming Soon....</p>
                 </div>
               </div>
             </div>
