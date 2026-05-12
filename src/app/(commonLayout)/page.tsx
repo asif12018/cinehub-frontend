@@ -140,6 +140,99 @@ function HomeContent() {
               </div>
             </div>
 
+            {/* STATISTICS SECTION */}
+            <div className="w-full bg-primary/10 py-16 border-y border-border">
+              <div className="max-w-7xl mx-auto px-4 md:px-12">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                  <div>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-primary mb-2">10K+</h3>
+                    <p className="text-muted-foreground font-medium uppercase tracking-wider text-sm">Movies & Shows</p>
+                  </div>
+                  <div>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-primary mb-2">50M+</h3>
+                    <p className="text-muted-foreground font-medium uppercase tracking-wider text-sm">Active Users</p>
+                  </div>
+                  <div>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-primary mb-2">120+</h3>
+                    <p className="text-muted-foreground font-medium uppercase tracking-wider text-sm">Countries Supported</p>
+                  </div>
+                  <div>
+                    <h3 className="text-4xl md:text-5xl font-extrabold text-primary mb-2">4K</h3>
+                    <p className="text-muted-foreground font-medium uppercase tracking-wider text-sm">Ultra HD Quality</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* DEVICES SECTION */}
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-12 py-16">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div className="flex-1 space-y-6">
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground">Available on your favorite devices</h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed">Stream on your phone, tablet, laptop, and TV without paying more. CineTube is fully optimized for all major platforms so you can take your entertainment anywhere.</p>
+                  <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      <span className="text-foreground font-medium">Smart TVs</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      <span className="text-foreground font-medium">Smartphones</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      <span className="text-foreground font-medium">Tablets & iPads</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                      <span className="text-foreground font-medium">Gaming Consoles</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 relative w-full">
+                  <div className="aspect-video bg-muted/20 rounded-2xl border border-border flex items-center justify-center shadow-2xl relative z-10 overflow-hidden">
+                     {/* Abstract shape to simulate a device showcase */}
+                     <div className="w-3/4 h-3/4 bg-background border border-border rounded-lg shadow-inner flex items-center justify-center">
+                        <span className="text-muted-foreground font-bold uppercase tracking-widest text-sm">Cross-Platform Sync</span>
+                     </div>
+                  </div>
+                  <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/20 rounded-full blur-3xl z-0"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* NEWS & BLOG SECTION */}
+            <div className="w-full bg-muted/5 py-16 border-t border-border">
+              <div className="max-w-7xl mx-auto px-4 md:px-12">
+                <div className="flex justify-between items-end mb-10">
+                  <div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Latest News</h2>
+                    <p className="text-muted-foreground text-lg">Updates from the entertainment world.</p>
+                  </div>
+                  <button className="text-primary hover:text-primary/80 font-semibold hidden md:block">View All Articles</button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    { title: "Top 10 Most Anticipated Blockbusters of 2026", date: "May 10, 2026" },
+                    { title: "Behind the Scenes: Making the AI Recommendation Engine", date: "May 5, 2026" },
+                    { title: "CineTube announces partnership with major indie studios", date: "April 28, 2026" }
+                  ].map((blog, i) => (
+                    <div key={i} className="bg-background border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-colors cursor-pointer group shadow-sm hover:shadow-md">
+                      <div className="aspect-[16/9] bg-muted/30 group-hover:bg-muted/50 transition-colors flex items-center justify-center">
+                        <svg className="w-8 h-8 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                      </div>
+                      <div className="p-6">
+                        <span className="text-xs font-bold text-primary mb-2 block">{blog.date}</span>
+                        <h3 className="text-lg font-bold text-foreground leading-snug">{blog.title}</h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* TESTIMONIALS SECTION */}
             <div className="w-full bg-muted/10 py-16 border-y border-border">
               <div className="max-w-7xl mx-auto px-4 md:px-12">
